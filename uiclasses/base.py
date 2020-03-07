@@ -221,7 +221,7 @@ class Model(DataBag, metaclass=MetaModel):
             (f.name, f) for f in dataclasses.fields(self.__class__)])
         for name in list(kw.keys()):
             field = known_fields.get(name)
-            value = kw.pop(name)
+            value = kw.get(name)
             if field:
                 if field.type and not isinstance(value, field.type):
                     raise TypeError(f"{name} is not a {field.type}: {value!r}")
