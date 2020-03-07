@@ -1,4 +1,4 @@
-.PHONY: tests all unit functional clean dependencies
+.PHONY: tests all unit functional clean dependencies tdd
 
 export VENV		?= .venv
 
@@ -15,10 +15,14 @@ $(VENV)/bin/nosetests $(VENV)/bin/python $(VENV)/bin/pip: # installs latest pip
 
 # Runs the unit and functional tests
 tests: $(VENV)/bin/nosetests  # runs all tests
-	$(VENV)/bin/nosetests tests --with-random
+	$(VENV)/bin/nosetests tests --with-random --cover-erase
+
+tdd: $(VENV)/bin/nosetests  # runs all tests
+	$(VENV)/bin/nosetests tests --with-watch --cover-erase
 
 # Install dependencies
 dependencies: | $(VENV)/bin/nosetests
+	$(VENV)/bin/pip install -r development.txt
 
 # runs unit tests
 unit: $(VENV)/bin/nosetests  # runs only unit tests
