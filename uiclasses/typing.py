@@ -1,9 +1,11 @@
 from typing import NewType
-from .base import Model
-from .collections import ModelSet
-from .collections import ModelList
+from uiclasses import base
+from uiclasses import collections
 
 
-Model = NewType("Model", Model)
-ModelSet = NewType("ModelSet", ModelSet)
-ModelList = NewType("ModelList", ModelList)
+Model = NewType("Model", base.Model)
+ModelSet = NewType("ModelSet", collections.ModelSet)
+ModelList = NewType("ModelList", collections.ModelList)
+
+IterableCollection = NewType(
+    "IterableCollection", collections.IterableCollection)
