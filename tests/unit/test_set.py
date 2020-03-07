@@ -79,7 +79,7 @@ def test_set_with_invalid_model():
     when_called = Essay.Set.when.called_with([post1, post2, "not a model"])
     when_called.should.have.raised(
         TypeError,
-        "cannot create Essay.Set because value at index [2] is not a <class 'tests.unit.collections.test_set.Essay'>: 'not a model' <class 'str'>",
+        "cannot create Essay.Set because value at index [2] is not a <class 'tests.unit.test_set.Essay'>: 'not a model' <class 'str'>",
     )
 
 
@@ -107,7 +107,7 @@ def test_format_pretty_table():
     when_called = posts.format_pretty_table.when.called_with(["inexistent"])
     when_called.should.have.raised(
         ValueError,
-        "the following columns are not available for <class 'tests.unit.collections.test_set.Essay'>: {'inexistent'}",
+        "the following columns are not available for <class 'tests.unit.test_set.Essay'>: {'inexistent'}",
     )
 
 
@@ -136,7 +136,7 @@ def test_format_robust_table():
     when_called = posts.format_robust_table.when.called_with(["inexistent"])
     when_called.should.have.raised(
         ValueError,
-        "the following columns are not available for <class 'tests.unit.collections.test_set.Essay'>: {'inexistent'}",
+        "the following columns are not available for <class 'tests.unit.test_set.Essay'>: {'inexistent'}",
     )
 
 

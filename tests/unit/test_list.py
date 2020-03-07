@@ -97,7 +97,7 @@ def test_list_with_invalid_model():
 
     when_called.should.have.raised(
         TypeError,
-        "cannot create BlogPost.List because value at index [2] is not a <class 'tests.unit.collections.test_list.BlogPost'>: 'not a model' <class 'str'>",
+        "cannot create BlogPost.List because value at index [2] is not a <class 'tests.unit.test_list.BlogPost'>: 'not a model' <class 'str'>",
     )
 
 
@@ -125,7 +125,7 @@ def test_format_pretty_table():
     when_called = posts.format_pretty_table.when.called_with(["inexistent"])
     when_called.should.have.raised(
         ValueError,
-        "the following columns are not available for <class 'tests.unit.collections.test_list.BlogPost'>: {'inexistent'}",
+        "the following columns are not available for <class 'tests.unit.test_list.BlogPost'>: {'inexistent'}",
     )
 
 
@@ -153,7 +153,7 @@ def test_format_robust_table():
     when_called = posts.format_robust_table.when.called_with(["inexistent"])
     when_called.should.have.raised(
         ValueError,
-        "the following columns are not available for <class 'tests.unit.collections.test_list.BlogPost'>: {'inexistent'}",
+        "the following columns are not available for <class 'tests.unit.test_list.BlogPost'>: {'inexistent'}",
     )
 
 
