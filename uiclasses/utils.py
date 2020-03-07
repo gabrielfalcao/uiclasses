@@ -61,15 +61,22 @@ def repr_attributes(attributes: dict, separator: str = " "):
 def extract_attribute_from_class_definition(
     name: str, cls: Type, attrs: dict, default: Any = None
 ) -> Any:
-    """designed for use within metaclasses to extract an attribute from the class definition, accepts a default as fallback"""
+    """designed for use within metaclasses to extract an attribute from
+    the class definition, accepts a default as fallback"""
     return getattr(cls, name, attrs.get(name)) or default
 
 
 def list_visible_field_names_from_dataclass(cls: Type):
     """lists all fields from a dataclass that does not have repr=False"""
-    return [f.name for f in fields(cls) if f.repr]
+    names = getattr(cls, '__visible_attributes__', [])
+    extra = [f.name for f in fields(cls) if f.name not in names and f.repr]
+    names.extend(extra)
+    return names
 
 
 def list_field_names_from_dataclass(cls: Type):
     """lists all fields from a dataclass without filter"""
-    return [f.name for f in fields(cls)]
+    names = getattr(cls, '__visible_attributes__', [])
+    extra = [f.name for f in fields(cls) if f.name not in names]
+    names.extend(extra)
+    return names

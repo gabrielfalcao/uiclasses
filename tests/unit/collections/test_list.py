@@ -31,6 +31,13 @@ def test_to_dict():
     )
     str(posts).should.equal("BlogPost.List[length=2]")
 
+    second_list = BlogPost.List(posts.to_dict())
+    second_list.should.equal(posts)
+
+    third_list = BlogPost.List([post1, post2, post1, post2]).unique()
+    third_list.should.be.a(BlogPost.Set)
+    third_list.should.have.length_of(2)
+
 
 def test_sorted_by():
 

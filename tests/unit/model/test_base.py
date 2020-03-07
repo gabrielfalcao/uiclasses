@@ -5,9 +5,9 @@ from humanfriendly.tables import format_robust_table, format_pretty_table
 
 
 class User(Model):
+    __visible_attributes__ = ['id', 'username', 'email']
     id: int
     username: str
-    email: str
 
 
 def test_construct_with_kwargs():

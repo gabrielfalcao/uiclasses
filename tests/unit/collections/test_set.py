@@ -31,6 +31,9 @@ def test_to_dict():
     )
     str(posts).should.equal("Essay.Set[length=2]")
 
+    second_set = Essay.Set(posts.to_dict())
+    second_set.should.equal(posts)
+
 
 def test_sorted_by():
 

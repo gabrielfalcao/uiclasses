@@ -182,6 +182,8 @@ class ModelList(list, IterableCollection):
             )
         items = []
         for index, child in enumerate(children):
+            if isinstance(child, dict):
+                child = self.__of_model__(child)
             if not isinstance(child, model_class):
                 raise TypeError(
                     f"cannot create {self.__class__.__name__} because value at index [{index}] is not a {model_class}: {child!r} {type(child)}"
@@ -210,6 +212,9 @@ class ModelSet(OrderedSet, IterableCollection):
             )
         items = []
         for index, child in enumerate(children):
+            if isinstance(child, dict):
+                child = self.__of_model__(child)
+
             if not isinstance(child, model_class):
                 raise TypeError(
                     f"cannot create {self.__class__.__name__} because value at index [{index}] is not a {model_class}: {child!r} {type(child)}"

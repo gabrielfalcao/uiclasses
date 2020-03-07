@@ -160,15 +160,16 @@ class MetaModel(type):
 
         basic_dataclass(cls)  # required by dataclasses.fields(cls)
 
-        visible = extract_attribute_from_class_definition(
-            "__visible_attributes__", cls, attrs, default=[]
-        )
-        visible.extend(
-            filter(
-                lambda name: name not in visible,
-                list_visible_field_names_from_dataclass(cls),
-            )
-        )
+        visible = []
+        from_annotations = list_visible_field_names_from_dataclass(cls)
+        from_dunder_declaration = filter(
+            lambda name: name not in from_annotations,
+            extract_attribute_from_class_definition(
+            "__visible_attributes__", cls, attrs, default=visible
+        ))
+        visible.extend(from_annotations)
+        visible.extend(from_dunder_declaration)
+
         attrs["__visible_attributes__"] = visible
         cls.__visible_attributes__ = visible
 
@@ -212,19 +213,20 @@ class Model(DataBag, metaclass=MetaModel):
 
         if not isinstance(__data__, dict):
             raise TypeError(
-                f"{self.__class__.__name__} received a non-dict __data__ argument: {__data__!r}"
+                f"{self.__class__.__name__} received a non-dict "
+                f"__data__ argument: {__data__!r}"
             )
 
-        for field in dataclasses.fields(self.__class__):
-            if field.name not in kw:
-                continue
+        known_fields = dict([
+            (f.name, f) for f in dataclasses.fields(self.__class__)])
+        for name in list(kw.keys()):
+            field = known_fields.get(name)
+            value = kw.pop(name)
+            if field:
+                if field.type and not isinstance(value, field.type):
+                    raise TypeError(f"{name} is not a {field.type}: {value!r}")
 
-            # value = try_convert(kw.pop(field.name), field.type)
-            value = kw.pop(field.name)
-            if field.type and not isinstance(value, field.type):
-                raise TypeError(f"{field.name} is not a {field.type}: {value!r}")
-
-            __data__[field.name] = value
+            __data__[name] = value
 
         self.__data__ = __data__
         self.initialize(*args, **kw)
