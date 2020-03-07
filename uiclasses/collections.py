@@ -16,17 +16,16 @@ class IterableCollection(UserFriendlyObject):
 
 
     For example it supports filtering by instance attributes through a cal to the
-    :py:meth:`~uiclasses.Model.attribute_matches` method of each children.
+    :py:meth:`~uiclasses.base.Model.attribute_matches` method of each children.
 
-    Features:
+    **Features:**
 
-    - sort by ``model.__ui_attributes__`` :py:meth:`~uiclasses.IterableCollection.sorted`
-    - filter with a lambda :meth:`~uiclasses.IterableCollection.filter`
-    - map to a lambda :meth:`~uiclasses.IterableCollection.map`
-    - filter by ``model.__ui_attributes__`` :meth:`~uiclasses.IterableCollection.filter_by`
-    - format robust table for console based on __ui_attributes__ :meth:`~uiclasses.IterableCollection.format_robust_table`
-    - format pretty table for console based on __ui_attributes__ :meth:`~uiclasses.IterableCollection.format_pretty_table`
-
+    - :py:meth:`~uiclasses.collections.IterableCollection.sorted_by` - sort by a single attribute
+    - :py:meth:`~uiclasses.collections.IterableCollection.filter_by` - to filter by a single attribute
+    - :py:meth:`~uiclasses.collections.IterableCollection.sorted` - alias to ``MyModel.List(sorted(my_model_collection))`` or ``.Set()``
+    - :py:meth:`~uiclasses.collections.IterableCollection.filter` - alias to ``MyModel.List(filter(callback, my_model_collection))``
+    - :py:meth:`~uiclasses.collections.IterableCollection.format_robust_table`
+    - :py:meth:`~uiclasses.collections.IterableCollection.format_pretty_table`
     """
 
     __visible_attributes__ = ["model_class"]
@@ -97,7 +96,7 @@ class IterableCollection(UserFriendlyObject):
         return self.__class__(results)
 
     def get_table_columns(self, columns: List[str] = None):
-        """proxy to :py:meth:`uiclasses.Model.get_table_columns`
+        """proxy to :py:meth:`~uiclasses.base.Model.get_table_columns`
         """
         available_columns = self.__of_model__.__visible_attributes__
         if not isinstance(columns, list):
@@ -109,9 +108,9 @@ class IterableCollection(UserFriendlyObject):
         """returns a list of values from the __ui_attributes__ of each child of this collection.
 
         Used by
-        :py:meth:`uiclasses.IterableCollection.format_robust_table`
+        :py:meth:`~uiclasses.collections.IterableCollection.format_robust_table`
         and
-        :py:meth:`uiclasses.IterableCollection.format_pretty_table`.
+        :py:meth:`~uiclasses.collections.IterableCollection.format_pretty_table`.
 
         """
         columns = self.get_table_columns(columns)
@@ -124,9 +123,9 @@ class IterableCollection(UserFriendlyObject):
         child of this collection.
 
         Used by
-        :py:meth:`uiclasses.IterableCollection.format_robust_table`
+        :py:meth:`~uiclasses.collections.IterableCollection.format_robust_table`
         and
-        :py:meth:`uiclasses.IterableCollection.format_pretty_table`.
+        :py:meth:`~uiclasses.collections.IterableCollection.format_pretty_table`.
 
         """
         columns = self.get_table_columns(columns)
@@ -168,7 +167,7 @@ class IterableCollection(UserFriendlyObject):
 
 
 class ModelList(list, IterableCollection):
-    """Implementation of :py:class:`uiclasses.IterableCollection` for the
+    """Implementation of :py:class:`~uiclasses.collections.IterableCollection` for the
     :py:class:`list` type.
 
     """
@@ -196,7 +195,7 @@ class ModelList(list, IterableCollection):
         return self.__of_model__.Set(self)
 
 class ModelSet(OrderedSet, IterableCollection):
-    """Implementation of :py:class:`uiclasses.IterableCollection` for the
+    """Implementation of :py:class:`~uiclasses.collections.IterableCollection` for the
     `OrderedSet <https://pypi.org/project/ordered-set/>`_ type.
     """
 
