@@ -274,7 +274,7 @@ class Model(DataBag, metaclass=MetaModel):
         return dict(
             [
                 (name, getattr(self, name, self.get(name)))
-                for name in self.__visible_attributes__
+                for name in list_field_names_from_dataclass(self.__class__)
             ]
         )
 
