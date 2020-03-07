@@ -7,12 +7,7 @@ from dataclasses import dataclass, fields
 def basic_dataclass(cls):
     """A simple alias to ``dataclasses.dataclass(init=False, eq=False, unsafe_hash=False, repr=False)``
     """
-    return dataclass(
-        init=False,
-        eq=False,
-        unsafe_hash=False,
-        repr=False,
-    )(cls)
+    return dataclass(init=False, eq=False, unsafe_hash=False, repr=False)(cls)
 
 
 def try_convert(value: Any, convert: Callable) -> Any:

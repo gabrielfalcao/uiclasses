@@ -176,10 +176,9 @@ class MetaModel(type):
             "__id_attributes__", cls, attrs, default=[]
         )
 
-        ids.extend(filter(
-            lambda name: name not in ids,
-            list_field_names_from_dataclass(cls)
-        ))
+        ids.extend(
+            filter(lambda name: name not in ids, list_field_names_from_dataclass(cls))
+        )
         attrs["__id_attributes__"] = ids
         cls.__id_attributes__ = ids
 

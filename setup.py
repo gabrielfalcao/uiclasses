@@ -34,11 +34,7 @@ def read_version():
 setup(
     name="ui-classes",
     version=read_version(),
-    description="\n".join(
-        [
-            "dataclasses for humans",
-        ]
-    ),
+    description="\n".join(["dataclasses for humans"]),
     long_description=local_file("README.rst"),
     entry_points={"console_scripts": ["ui-classes = uiclasses.cli:entrypoint"]},
     url="https://github.com/gabrielfalcao/ui-classes",

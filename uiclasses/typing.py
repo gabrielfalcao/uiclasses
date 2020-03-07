@@ -4,6 +4,6 @@ from .collections import ModelSet
 from .collections import ModelList
 
 
-Model = NewType('Model', Model)
-ModelSet = NewType('ModelSet', ModelSet)
-ModelList = NewType('ModelList', ModelList)
+Model = NewType("Model", Model)
+ModelSet = NewType("ModelSet", ModelSet)
+ModelList = NewType("ModelList", ModelList)

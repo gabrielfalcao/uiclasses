@@ -190,9 +190,10 @@ class ModelList(list, IterableCollection):
 
         super().__init__(map(model_class, items))
 
-    def unique(self) -> 'ModelSet':
+    def unique(self) -> "ModelSet":
         """returns a :py:class:`~uiclasses.collections.ModelSet` of all unique items in this :py:class:`~uiclasses.collections.ModelList`"""
         return self.__of_model__.Set(self)
+
 
 class ModelSet(OrderedSet, IterableCollection):
     """Implementation of :py:class:`~uiclasses.collections.IterableCollection` for the
