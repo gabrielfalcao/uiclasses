@@ -68,7 +68,7 @@ def extract_attribute_from_class_definition(
 
 def list_visible_field_names_from_dataclass(cls: Type):
     """lists all fields from a dataclass that does not have repr=False"""
-    names = getattr(cls, '__visible_attributes__', [])
+    names = getattr(cls, "__visible_attributes__", [])
     extra = [f.name for f in fields(cls) if f.name not in names and f.repr]
     names.extend(extra)
     return names
@@ -76,7 +76,7 @@ def list_visible_field_names_from_dataclass(cls: Type):
 
 def list_field_names_from_dataclass(cls: Type):
     """lists all fields from a dataclass without filter"""
-    names = getattr(cls, '__visible_attributes__', [])
+    names = getattr(cls, "__visible_attributes__", [])
     extra = [f.name for f in fields(cls) if f.name not in names]
     names.extend(extra)
     return names

@@ -165,8 +165,9 @@ class MetaModel(type):
         from_dunder_declaration = filter(
             lambda name: name not in from_annotations,
             extract_attribute_from_class_definition(
-            "__visible_attributes__", cls, attrs, default=visible
-        ))
+                "__visible_attributes__", cls, attrs, default=visible
+            ),
+        )
         visible.extend(from_annotations)
         visible.extend(from_dunder_declaration)
 
@@ -242,8 +243,7 @@ class Model(DataBag, metaclass=MetaModel):
                 f"__data__ argument: {__data__!r}"
             )
 
-        known_fields = dict([
-            (f.name, f) for f in dataclasses.fields(self.__class__)])
+        known_fields = dict([(f.name, f) for f in dataclasses.fields(self.__class__)])
         for name in list(kw.keys()):
             field = known_fields.get(name)
             value = kw.get(name)
