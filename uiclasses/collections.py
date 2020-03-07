@@ -28,13 +28,13 @@ class IterableCollection(UserFriendlyObject):
     - format pretty table for console based on __ui_attributes__ :meth:`~uiclasses.IterableCollection.format_pretty_table`
 
     """
-    __visible_atttributes__ = ['model_class']
+    __visible_attributes__ = ['model_class']
 
     def __repr__(self):
-        return f"<{self.__ui_name__()} [{self.model_class}]>"
+        return f"<{self.__ui_name__()} {list(self)}>"
 
     def __str__(self):
-        return f"{self.__ui_name__()}({self.model_class.__name__}, count={len(self)})"
+        return f"{self.__ui_name__()}[length={len(self)}]"
 
     def sorted(self, **kw):
         """returns a new ``ModelList`` with this collections' children sorted.
@@ -49,7 +49,7 @@ class IterableCollection(UserFriendlyObject):
         """
 
         items = sorted(self, **kw)
-        return self.model_class.List(*items)
+        return self.__class__(items)
 
     def sorted_by(self, attribute: str, **kw):
         """sort by a single attribute of the model children.
@@ -93,12 +93,12 @@ class IterableCollection(UserFriendlyObject):
            result = x.filter(key=lambda model: model.id)
         """
         results = filter(check, self)
-        return self.model_class.List(*results)
+        return self.__class__(results)
 
     def get_table_columns(self, columns: List[str] = None):
         """proxy to :py:meth:`uiclasses.Model.get_table_columns`
         """
-        available_columns = self.model_class.__visible_atttributes__
+        available_columns = self.__of_model__.__visible_attributes__
         if not isinstance(columns, list):
             return available_columns
 
@@ -148,11 +148,11 @@ class IterableCollection(UserFriendlyObject):
 
     def validate_columns(self, columns):
 
-        mismatched_columns = set(columns).difference(self.model_class.__visible_atttributes__)
+        mismatched_columns = set(columns).difference(self.__of_model__.__visible_attributes__)
         if mismatched_columns:
             raise ValueError(
                 f'the following columns are not available '
-                f'for {self.model_class}: {mismatched_columns}'
+                f'for {self.__of_model__}: {mismatched_columns}'
             )
 
         return columns
@@ -168,19 +168,27 @@ class ModelList(list, IterableCollection):
 
     """
 
-    def __init__(self, model_class: type, children: List[Model]):
+    def __init__(self, children: List[Model]):
+        if self.__class__ is ModelList:
+            raise TypeError(
+                f'{self.__class__.__name__} is not designed for direct instantiation, use YourModel.List instead.'
+            )
+
+        model_class = getattr(self, '__of_model__', None)
+
         if not isinstance(model_class, type) or not issubclass(model_class, Model):
             raise TypeError(
                 f"ModelList requires the 'model_class' attribute to be "
-                f"a Model subclass, got {model_class!r} instead"
+                f"a Model subclass, got {model_class!r} instead. "
+                "If you are using ModelList directly "
             )
 
-        self.model_class = model_class
+        self.__of_model__ = model_class
 
         if not isinstance(children, ITERABLES):
             raise TypeError(
-                f"ModelList requires the 'children' attribute to be "
-                f"a list, got {children!r} {type(children)} instead"
+                f"{self.__class__.__name__} requires the 'children' attribute to be "
+                f"a valid iterable, got {children!r} {type(children)} instead"
             )
         items = []
         for index, child in enumerate(children):
@@ -199,19 +207,27 @@ class ModelSet(OrderedSet, IterableCollection):
 
     """
 
-    def __init__(self, model_class: type, children: Set[Model]):
-        if not isinstance(model_class, type) or not issubclass(model_class, Model):
+    def __init__(self, children: List[Model]):
+        if self.__class__ is ModelList:
             raise TypeError(
-                f"ModelSet requires the 'model_class' attribute to be "
-                f"a Model subclass, got {model_class!r} instead"
+                f'{self.__class__.__name__} is not designed for direct instantiation, use YourModel.List instead.'
             )
 
-        self.model_class = model_class
+        model_class = getattr(self, '__of_model__', None)
+
+        if not isinstance(model_class, type) or not issubclass(model_class, Model):
+            raise TypeError(
+                f"{self.__class__.__name__} requires the 'model_class' attribute to be "
+                f"a Model subclass, got {model_class!r} instead. "
+                "If you are using {self.__class__.__name__} directly "
+            )
+
+        self.__of_model__ = model_class
 
         if not isinstance(children, ITERABLES):
             raise TypeError(
-                f"ModelSet requires the 'children' attribute to be "
-                f"a set, got {children!r} {type(children)} instead"
+                f"{self.__class__.__name__} requires the 'children' attribute to be "
+                f"a valid iterable, got {children!r} {type(children)} instead"
             )
         items = []
         for index, child in enumerate(children):
@@ -223,35 +239,7 @@ class ModelSet(OrderedSet, IterableCollection):
 
         super().__init__(map(model_class, items))
 
-    def sorted(self, *args, **kw):
-        """returns a new ``ModelSet`` with this collections' children sorted.
-
-        Example:
-
-        .. code::
-
-           x = ModelSet([MyModel({"id": 2}), MyModel({"id": 3})])
-           result = x.sorted(key=lambda model: model.id)
-
-        """
-        items = super().sorted(*args, **kw)
-        return self.model_class.Set(*items)
-
-    def filter(self, *args, **kw):
-        """returns a new ``ModelSet`` with this collections' children filter.
-
-        Example:
-
-        .. code::
-
-           x = ModelSet([MyModel({"id": 2}), MyModel({"id": 3})])
-           result = x.filter(key=lambda model: model.id)
-
-        """
-        items = super().filter(*args, **kw)
-        return self.model_class.Set(*items)
-
-
 
 COLLECTION_TYPES[list] = ModelList
 COLLECTION_TYPES[set] = ModelSet
+COLLECTION_TYPES[OrderedSet] = ModelSet

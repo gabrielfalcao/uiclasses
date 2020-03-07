@@ -2,7 +2,7 @@
 from uiclasses import ModelSet, Model
 
 
-class BlogPost(Model):
+class Essay(Model):
     id: str
     title: str
     body: str
@@ -10,19 +10,19 @@ class BlogPost(Model):
 
 def test_to_dict():
 
-    post1 = BlogPost(dict(
+    post1 = Essay(dict(
         id='1',
         title='title 1',
         body='body 1',
     ))
 
-    post2 = BlogPost(dict(
+    post2 = Essay(dict(
         id='2',
         title='title 2',
         body='body 2',
     ))
 
-    posts = BlogPost.Set(post1, post2)
+    posts = Essay.Set([post1, post2])
 
     posts.should.be.a(ModelSet)
 
@@ -31,28 +31,28 @@ def test_to_dict():
         {'id': '2', 'title': 'title 2', 'body': 'body 2'},
     ])
 
-    repr(posts).should.equal("ModelSet([<BlogPost id='1' title='title 1' body='body 1'>, <BlogPost id='2' title='title 2' body='body 2'>])")
-    str(posts).should.equal('ModelSet(BlogPost, count=2)')
+    repr(posts).should.equal("Essay.Set([<Essay id='1' title='title 1' body='body 1'>, <Essay id='2' title='title 2' body='body 2'>])")
+    str(posts).should.equal('Essay.Set[length=2]')
 
 
 def test_sorted_by():
 
-    post1 = BlogPost(dict(
+    post1 = Essay(dict(
         id='1',
         title='title 1',
         body='body 1',
     ))
 
-    post2 = BlogPost(dict(
+    post2 = Essay(dict(
         id='2',
         title='title 2',
         body='body 2',
     ))
 
-    posts = BlogPost.Set(post1, post2).sorted_by('title', reverse=True)
+    posts = Essay.Set([post1, post2]).sorted_by('title', reverse=True)
 
     posts.should.be.a(ModelSet)
-    posts.should.have.property('model_class').being.equal(BlogPost)
+    posts.should.have.property('__of_model__').being.equal(Essay)
 
     posts.to_dict().should.equal([
         {'id': '2', 'title': 'title 2', 'body': 'body 2'},
@@ -62,22 +62,22 @@ def test_sorted_by():
 
 def test_filter_by():
 
-    post1 = BlogPost(dict(
+    post1 = Essay(dict(
         id='1',
         title='foo bar',
         body='body 1',
     ))
 
-    post2 = BlogPost(dict(
+    post2 = Essay(dict(
         id='2',
         title='chuck norris',
         body='body 2',
     ))
 
-    posts = BlogPost.Set(post1, post2).filter_by('title', '*uck*')
+    posts = Essay.Set([post1, post2]).filter_by('title', '*uck*')
 
     posts.should.be.a(ModelSet)
-    posts.should.have.property('model_class').being.equal(BlogPost)
+    posts.should.have.property('__of_model__').being.equal(Essay)
 
     posts.to_dict().should.equal([
         {'id': '2', 'title': 'chuck norris', 'body': 'body 2'},
@@ -86,38 +86,37 @@ def test_filter_by():
 
 def test_set_with_invalid_model():
 
-    post1 = BlogPost(dict(
+    post1 = Essay(dict(
         id='1',
         title='foo bar',
         body='body 1',
     ))
 
-    post2 = BlogPost(dict(
+    post2 = Essay(dict(
         id='2',
         title='chuck norris',
         body='body 2',
     ))
 
-    when_called = BlogPost.Set.when.called_with(post1, post2, 'not a model')
-
-    when_called.should.have.raised(TypeError, "cannot create ModelSet because value at index [2] is not a <class 'tests.unit.collections.test_set.BlogPost'>: 'not a model' <class 'str'>")
+    when_called = Essay.Set.when.called_with([post1, post2, 'not a model'])
+    when_called.should.have.raised(TypeError, "cannot create Essay.Set because value at index [2] is not a <class 'tests.unit.collections.test_set.Essay'>: 'not a model' <class 'str'>")
 
 
 def test_format_robust_table():
 
-    post1 = BlogPost(dict(
+    post1 = Essay(dict(
         id='1',
         title='title 1',
         body='body 1',
     ))
 
-    post2 = BlogPost(dict(
+    post2 = Essay(dict(
         id='2',
         title='title 2',
         body='body 2',
     ))
 
-    posts = BlogPost.Set(post1, post2)
+    posts = Essay.Set([post1, post2])
 
     posts.should.be.a(ModelSet)
 
@@ -136,19 +135,19 @@ def test_format_robust_table():
 
 def test_format_pretty_table():
 
-    post1 = BlogPost(dict(
+    post1 = Essay(dict(
         id='1',
         title='title 1',
         body='body 1',
     ))
 
-    post2 = BlogPost(dict(
+    post2 = Essay(dict(
         id='2',
         title='title 2',
         body='body 2',
     ))
 
-    posts = BlogPost.Set(post1, post2)
+    posts = Essay.Set([post1, post2])
 
     posts.should.be.a(ModelSet)
 
@@ -172,10 +171,5 @@ def test_format_pretty_table():
 
 
 def test_model_set_not_iterable():
-    when_called = ModelSet.when.called_with(BlogPost, None)
-    when_called.should.have.raised(TypeError, "ModelSet requires the 'children' attribute to be a set, got None <class 'NoneType'> instead")
-
-
-def test_model_set_not_model():
-    when_called = ModelSet.when.called_with(dict, None)
-    when_called.should.have.raised(TypeError, "ModelSet requires the 'model_class' attribute to be a Model subclass, got <class 'dict'> instead")
+    when_called = Essay.Set.when.called_with(None)
+    when_called.should.have.raised(TypeError, "Essay.Set requires the 'children' attribute to be a valid iterable, got None <class 'NoneType'> instead")

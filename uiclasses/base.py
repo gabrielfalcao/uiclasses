@@ -1,21 +1,31 @@
 import re
 import json
 import hashlib
-import logging
 import dataclasses
 
-from typing import List
+from dataclasses import Field
+
+from typing import List, Any, Tuple, Type
 from fnmatch import fnmatch
 from functools import reduce
 
 from humanfriendly.tables import format_robust_table, format_pretty_table
+
+
 from .meta import (
     is_builtin_class_except,
 )
 
 
-logger = logging.getLogger(__name__)
 COLLECTION_TYPES = {}
+
+
+basic_dataclass = dataclasses.dataclass(
+    init=False,
+    eq=False,
+    unsafe_hash=False,
+    repr=False
+)
 
 
 def traverse_dict_children(data, *keys, fallback=None):
@@ -34,9 +44,21 @@ def repr_attributes(attributes: dict, separator: str = " "):
     return separator.join([f"{k}={v!r}" for k, v in attributes.items()])
 
 
+@basic_dataclass
 class UserFriendlyObject(object):
     def __ui_name__(self):
         return self.__class__.__name__
+
+    def __get_field_value__(self, field: Field) -> Any:
+        default = field.default or field.default_factory()
+        return getattr(self, field.name, default)
+
+    def __get_field_keyvalue__(self, field: Field) -> Tuple[str, Any]:
+        return (field.name, self.__get_field_value__(field))
+
+    def __ui_attributes__(self):
+        fields = dataclasses.fields(self.__class__)
+        return dict(map(self.__get_field_keyvalue__, fields))
 
     def __repr__(self):
         attributes = repr_attributes(self.__ui_attributes__())
@@ -163,6 +185,18 @@ def is_builtin_model(target: type) -> bool:
     return is_builtin_class_except(target, ["MetaModel", "Model", "DataBag"])
 
 
+def extract_attribute_from_class_definition(name: str, cls: Type, attrs: dict, default: Any = None) -> Any:
+    return getattr(cls, name, attrs.get(name)) or default
+
+
+def list_visible_field_names_from_dataclass(cls: Type):
+    return [f.name for f in dataclasses.fields(cls) if f.repr]
+
+
+def list_field_names_from_dataclass(cls: Type):
+    return [f.name for f in dataclasses.fields(cls)]
+
+
 class MetaModel(type):
     """metaclass for data models
     """
@@ -171,16 +205,40 @@ class MetaModel(type):
         if is_builtin_model(cls):
             return
 
-        dataclasses.dataclass(init=False, eq=False, unsafe_hash=False, repr=False)(cls)
-        __visible_atttributes__ = getattr(cls, '__visible_atttributes__', attrs.get('__visible_atttributes__')) or []
-        __visible_atttributes__.extend([f.name for f in dataclasses.fields(cls) if f.repr and f.name not in __visible_atttributes__])
-        attrs['__visible_atttributes__'] = __visible_atttributes__
-        cls.__visible_atttributes__ = __visible_atttributes__
+        basic_dataclass(cls)  # required by dataclasses.fields(cls)
 
-        __id_attributes__ = getattr(cls, '__id_attributes__', attrs.get('__id_attributes__')) or []
-        __id_attributes__.extend([f.name for f in dataclasses.fields(cls) if f.repr and f.name not in __id_attributes__])
-        attrs['__id_attributes__'] = __id_attributes__
-        cls.__id_attributes__ = __id_attributes__
+        visible = extract_attribute_from_class_definition(
+            '__visible_attributes__',
+            cls,
+            attrs,
+            default=[]
+        )
+        visible.extend(
+            filter(
+                lambda name: name not in visible,
+                list_visible_field_names_from_dataclass(cls)
+            )
+        )
+        attrs['__visible_attributes__'] = visible
+        cls.__visible_attributes__ = visible
+
+        ids = extract_attribute_from_class_definition(
+            '__id_attributes__',
+            cls, attrs, default=[]
+        )
+
+        ids.extend(
+            filter(
+                lambda name: name not in ids,
+                list_field_names_from_dataclass(cls)
+            )
+        )
+        attrs['__id_attributes__'] = ids
+        cls.__id_attributes__ = ids
+
+        cls.Set = attrs['Set'] = type(f'{name}.Set', (COLLECTION_TYPES[set], ), {'__of_model__': cls})
+        cls.List = attrs['List'] = type(f'{name}.List', (COLLECTION_TYPES[list], ), {'__of_model__': cls})
+
         super().__init__(name, bases, attrs)
 
 
@@ -189,7 +247,7 @@ class Model(DataBag, metaclass=MetaModel):
     command-line output of kubernetes tools such as kubectl, kubectx.
     """
 
-    __visible_atttributes__: List[str]
+    __visible_attributes__: List[str]
 
     def __init__(self, __data__: dict = None, *args, **kw):
         __data__ = __data__ or {}
@@ -257,7 +315,7 @@ class Model(DataBag, metaclass=MetaModel):
         return self.serialize()
 
     @classmethod
-    def from_json(cls, json_string: str) -> "uiclasses.Model":
+    def from_json(cls, json_string: str) -> "Model":
         data = try_json(json_string)
         return cls(data)
 
@@ -275,7 +333,7 @@ class Model(DataBag, metaclass=MetaModel):
         return dict(
             [
                 (name, getattr(self, name, self.get(name)))
-                for name in self.__visible_atttributes__
+                for name in self.__visible_attributes__
             ]
         )
 
@@ -284,30 +342,14 @@ class Model(DataBag, metaclass=MetaModel):
         :py:class:`~uiclasses.ModelList` to
         :py:meth:`~uiclasses.ModelList.filter_by`.
         """
-        try:
-            value = getattr(self, attribute_name, self.get(attribute_name))
-        except AttributeError as e:
-            raise RuntimeError(
-                f"{self} does not have a {attribute_name!r} attribute: {e}"
-            )
-
+        value = getattr(self, attribute_name, self.get(attribute_name))
         if isinstance(fnmatch_pattern, str):
             return fnmatch(value or "", fnmatch_pattern or "")
         else:
             return value == fnmatch_pattern
 
-    @classmethod
-    def List(cls, *items):
-        ModelList = COLLECTION_TYPES[list]
-        return ModelList(cls, list(items))
-
-    @classmethod
-    def Set(cls, *items):
-        ModelSet = COLLECTION_TYPES[set]
-        return ModelSet(cls, items)
-
     def get_table_columns(self):
-        return self.__class__.__visible_atttributes__
+        return self.__class__.__visible_attributes__
 
     def get_table_rows(self):
         return [list(self.__ui_attributes__().values())]

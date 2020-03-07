@@ -8,7 +8,6 @@ class BlogPost(Model):
     body: str
 
 
-
 def test_to_dict():
 
     post1 = BlogPost(dict(
@@ -23,7 +22,7 @@ def test_to_dict():
         body='body 2',
     ))
 
-    posts = BlogPost.List(post1, post2)
+    posts = BlogPost.List([post1, post2])
 
     posts.should.be.a(ModelList)
 
@@ -33,7 +32,7 @@ def test_to_dict():
     ])
 
     repr(posts).should.equal("[<BlogPost id='1' title='title 1' body='body 1'>, <BlogPost id='2' title='title 2' body='body 2'>]")
-    str(posts).should.equal('ModelList(BlogPost, count=2)')
+    str(posts).should.equal('BlogPost.List[length=2]')
 
 
 def test_sorted_by():
@@ -50,10 +49,10 @@ def test_sorted_by():
         body='body 2',
     ))
 
-    posts = BlogPost.List(post1, post2).sorted_by('title', reverse=True)
+    posts = BlogPost.List([post1, post2]).sorted_by('title', reverse=True)
 
     posts.should.be.a(ModelList)
-    posts.should.have.property('model_class').being.equal(BlogPost)
+    posts.should.have.property('__of_model__').being.equal(BlogPost)
 
     posts.to_dict().should.equal([
         {'id': '2', 'title': 'title 2', 'body': 'body 2'},
@@ -75,10 +74,10 @@ def test_filter_by():
         body='body 2',
     ))
 
-    posts = BlogPost.List(post1, post2).filter_by('title', '*uck*')
+    posts = BlogPost.List([post1, post2]).filter_by('title', '*uck*')
 
     posts.should.be.a(ModelList)
-    posts.should.have.property('model_class').being.equal(BlogPost)
+    posts.should.have.property('__of_model__').being.equal(BlogPost)
 
     posts.to_dict().should.equal([
         {'id': '2', 'title': 'chuck norris', 'body': 'body 2'},
@@ -99,9 +98,9 @@ def test_list_with_invalid_model():
         body='body 2',
     ))
 
-    when_called = BlogPost.List.when.called_with(post1, post2, 'not a model')
+    when_called = BlogPost.List.when.called_with([post1, post2, 'not a model'])
 
-    when_called.should.have.raised(TypeError, "cannot create ModelList because value at index [2] is not a <class 'tests.unit.collections.test_list.BlogPost'>: 'not a model' <class 'str'>")
+    when_called.should.have.raised(TypeError, "cannot create BlogPost.List because value at index [2] is not a <class 'tests.unit.collections.test_list.BlogPost'>: 'not a model' <class 'str'>")
 
 
 def test_format_robust_table():
@@ -118,7 +117,7 @@ def test_format_robust_table():
         body='body 2',
     ))
 
-    posts = BlogPost.List(post1, post2)
+    posts = BlogPost.List([post1, post2])
 
     posts.should.be.a(ModelList)
 
@@ -157,7 +156,7 @@ def test_format_pretty_table():
         body='body 2',
     ))
 
-    posts = BlogPost.List(post1, post2)
+    posts = BlogPost.List([post1, post2])
 
     posts.should.be.a(ModelList)
 
@@ -184,10 +183,5 @@ def test_format_pretty_table():
 
 
 def test_model_list_not_iterable():
-    when_called = ModelList.when.called_with(BlogPost, None)
-    when_called.should.have.raised(TypeError, "ModelList requires the 'children' attribute to be a list, got None <class 'NoneType'> instead")
-
-
-def test_model_list_not_model():
-    when_called = ModelList.when.called_with(dict, None)
-    when_called.should.have.raised(TypeError, "ModelList requires the 'model_class' attribute to be a Model subclass, got <class 'dict'> instead")
+    when_called = BlogPost.List.when.called_with(None)
+    when_called.should.have.raised(TypeError, "BlogPost.List requires the 'children' attribute to be a valid iterable, got None <class 'NoneType'> instead")

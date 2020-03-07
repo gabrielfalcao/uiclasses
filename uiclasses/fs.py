@@ -5,9 +5,13 @@ runtime helper functions used for leveraging idiosyncrasies of testing.
 
 import os
 import json
+import logging
 from typing import List
 from pathlib import Path
 from . import Model
+
+
+logger = logging.getLogger(__name__)
 
 
 def expanded_path(path: [str, Path]) -> Path:
