@@ -34,21 +34,7 @@ def repr_attributes(attributes: dict, separator: str = " "):
     return separator.join([f"{k}={v!r}" for k, v in attributes.items()])
 
 
-def object_is_user_friendly(obj: object) -> bool:
-    """check if the given object is user-friendly to be printed on the UI"""
-    return isinstance(obj, UserFriendlyObject)
-
-
 class UserFriendlyObject(object):
-    def __ui_attributes__(self):
-        return dict(
-            [
-                (key, value)
-                for key, value in self.__dict__.items()
-                if object_is_user_friendly(value)
-            ]
-        )
-
     def __ui_name__(self):
         return self.__class__.__name__
 
