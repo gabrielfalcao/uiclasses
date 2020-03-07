@@ -169,21 +169,7 @@ class ModelList(list, IterableCollection):
     """
 
     def __init__(self, children: List[Model]):
-        if self.__class__ is ModelList:
-            raise TypeError(
-                f'{self.__class__.__name__} is not designed for direct instantiation, use YourModel.List instead.'
-            )
-
-        model_class = getattr(self, '__of_model__', None)
-
-        if not isinstance(model_class, type) or not issubclass(model_class, Model):
-            raise TypeError(
-                f"ModelList requires the 'model_class' attribute to be "
-                f"a Model subclass, got {model_class!r} instead. "
-                "If you are using ModelList directly "
-            )
-
-        self.__of_model__ = model_class
+        model_class = self.__of_model__
 
         if not isinstance(children, ITERABLES):
             raise TypeError(
@@ -208,21 +194,7 @@ class ModelSet(OrderedSet, IterableCollection):
     """
 
     def __init__(self, children: List[Model]):
-        if self.__class__ is ModelList:
-            raise TypeError(
-                f'{self.__class__.__name__} is not designed for direct instantiation, use YourModel.List instead.'
-            )
-
         model_class = getattr(self, '__of_model__', None)
-
-        if not isinstance(model_class, type) or not issubclass(model_class, Model):
-            raise TypeError(
-                f"{self.__class__.__name__} requires the 'model_class' attribute to be "
-                f"a Model subclass, got {model_class!r} instead. "
-                "If you are using {self.__class__.__name__} directly "
-            )
-
-        self.__of_model__ = model_class
 
         if not isinstance(children, ITERABLES):
             raise TypeError(
