@@ -4,10 +4,12 @@ GIT_ROOT		:= $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 DOCS_ROOT		:= $(GIT_ROOT)/docs
 HTML_ROOT		:= $(DOCS_ROOT)/build/html
 VENV_ROOT		:= $(GIT_ROOT)/.venv
+VENV			?= $(VENV_ROOT)
 BENTO_BIN		:= $(VENV)/bin/bento
 DOCS_INDEX		:= $(HTML_ROOT)/index.html
 BENTO_EMAIL		:= gabriel@nacaolivre.org
-export VENV		?= $(VENV_ROOT)
+
+export VENV
 
 
 
