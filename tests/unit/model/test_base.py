@@ -8,7 +8,7 @@ from humanfriendly.tables import (
 
 
 class User(Model):
-    id: str
+    id: int
     username: str
     email: str
 
@@ -16,11 +16,11 @@ class User(Model):
 def test_construct_with_kwargs():
 
     chuck = User(
-        id='1',
+        id=1,
         username='chucknorris',
         email='root@chucknorris.com'
     )
-    chuck.to_dict().should.equal({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
+    chuck.to_dict().should.equal({'id': 1, 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
 
 
 def test_getbool():
@@ -44,13 +44,13 @@ def test_getbool():
 
 
 def test_construct_with_dict():
-    chuck = User({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
-    chuck.to_dict().should.equal({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
+    chuck = User({'id': 1, 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
+    chuck.to_dict().should.equal({'id': 1, 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
 
 
 def test_nonzero():
     empty = User()
-    full = User(id='2')
+    full = User(id=2)
     bool(empty).should.equal(False)
     bool(full).should.equal(True)
 
@@ -58,7 +58,7 @@ def test_nonzero():
 def test_hashing():
     chuck1 = User({'id': '10000', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
     chuck2 = User({'id': '10000', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
-    chuck3 = User({'id': '2', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
+    chuck3 = User({'id': 2, 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
 
     hash(chuck1).should.equal(1055335369465515066)
     hash(chuck2).should.equal(1055335369465515066)
@@ -66,8 +66,8 @@ def test_hashing():
 
 
 def test_equals():
-    chuck1 = User({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
-    chuck2 = User({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
+    chuck1 = User({'id': 1, 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
+    chuck2 = User({'id': 1, 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
 
     chuck1.should.equal(chuck2)
 
@@ -79,7 +79,7 @@ def test_equals():
 
 
 def test_format_pretty_table():
-    chuck = User({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
+    chuck = User({'id': 1, 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
     chuck.format_pretty_table().should.equal(format_pretty_table(
         [
             [1, 'chucknorris', 'root@chucknorris.com'],
@@ -89,7 +89,7 @@ def test_format_pretty_table():
 
 
 def test_format_robust_table():
-    chuck = User({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
+    chuck = User({'id': 1, 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
     chuck.format_robust_table().should.equal(format_robust_table(
         [
             [1, 'chucknorris', 'root@chucknorris.com'],
@@ -107,7 +107,7 @@ def test_create_model_with_nondict_data():
 
 def test_create_model_with_kwarg_type_mismatching_field_declaration():
     when_created = User.when.called_with(
-        id='1',
+        id=1,
         username={'a set, not a string'}
     )
 
