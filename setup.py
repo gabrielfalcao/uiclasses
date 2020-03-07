@@ -32,16 +32,16 @@ def read_version():
 
 
 setup(
-    name="ui-classes",
+    name="uiclasses",
     version=read_version(),
     description="\n".join(["dataclasses for humans"]),
     long_description=local_file("README.rst"),
-    entry_points={"console_scripts": ["ui-classes = uiclasses.cli:entrypoint"]},
-    url="https://github.com/gabrielfalcao/ui-classes",
+    entry_points={"console_scripts": ["uiclasses = uiclasses.cli:entrypoint"]},
+    url="https://github.com/gabrielfalcao/uiclasses",
     packages=find_packages(exclude=["*tests*"]),
     include_package_data=True,
     package_data={"uiclasses": ["README.rst", "*.png", "*.rst", "docs/*", "docs/*/*"]},
-    package_dir={"ui-classes": "uiclasses"},
+    package_dir={"uiclasses": "uiclasses"},
     zip_safe=False,
     author="Gabriel Falcão",
     author_email="gabriel@nacaolivre.org",

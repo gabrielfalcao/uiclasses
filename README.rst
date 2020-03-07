@@ -1,4 +1,4 @@
-ui-classes
+uiclasses
 ##########
 
 - Powered by `Python 3 Data Classes <https://docs.python.org/3/library/dataclasses.html>`_.
