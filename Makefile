@@ -1,12 +1,12 @@
-.PHONY: tests all unit functional clean dependencies tdd docs html purge
+.PHONY: tests all unit functional clean dependencies tdd docs html purge dist
 
 GIT_ROOT		:= $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 DOCS_ROOT		:= $(GIT_ROOT)/docs
 HTML_ROOT		:= $(DOCS_ROOT)/build/html
 VENV_ROOT		:= $(GIT_ROOT)/.venv
-
+BENTO_BIN		:= $(shell which bento || echo "$(VENV)/bin/bento")
 DOCS_INDEX		:= $(HTML_ROOT)/index.html
-
+BENTO_EMAIL		:= gabriel@nacaolivre.org
 export VENV		?= $(VENV_ROOT)
 
 
@@ -21,6 +21,9 @@ $(VENV)/bin/sphinx-build $(VENV)/bin/nosetests $(VENV)/bin/python $(VENV)/bin/pi
 	test -e $(VENV)/bin/pip || make $(VENV)
 	$(VENV)/bin/pip install -r development.txt
 	$(VENV)/bin/pip install -e .
+
+$(BENTO_BIN): | $(VENV)/bin/pip
+	$(VENV)/bin/pip install bento-cli
 
 # Runs the unit and functional tests
 tests: $(VENV)/bin/nosetests  # runs all tests
@@ -49,6 +52,20 @@ html: $(DOCS_INDEX)
 
 docs: $(DOCS_INDEX)
 	open $(DOCS_INDEX)
+
+release: tests html-docs
+	@rm -rf dist/*
+	@./.release
+	@make pypi
+
+bento: | $(BENTO_BIN)
+	$(BENTO_BIN) --agree --email=$(BENTO_EMAIL) check --all
+
+dist: unit functional tests bento
+	poetry run python setup.py build sdist
+
+pypi: dist
+	@poetry run twine upload dist/*.tar.gz
 
 # cleanup temp files
 clean:
