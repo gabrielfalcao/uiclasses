@@ -17,7 +17,7 @@ $(VENV):  # creates $(VENV) folder if does not exist
 	python3 -mvenv $(VENV)
 	$(VENV)/bin/pip install -U pip setuptools
 
-$(VENV)/bin/sphinx-build $(VENV)/bin/nosetests $(VENV)/bin/python $(VENV)/bin/pip: # installs latest pip
+$(VENV)/bin/sphinx-build $(VENV)/bin/twine $(VENV)/bin/nosetests $(VENV)/bin/python $(VENV)/bin/pip: # installs latest pip
 	test -e $(VENV)/bin/pip || make $(VENV)
 	$(VENV)/bin/pip install -r development.txt
 	$(VENV)/bin/pip install -e .
@@ -61,11 +61,11 @@ release: tests html-docs
 bento: | $(BENTO_BIN)
 	$(BENTO_BIN) --agree --email=$(BENTO_EMAIL) check --all
 
-dist: unit functional tests bento
-	poetry run python setup.py build sdist
+dist: clean bento unit functional tests html
+	$(VENV)/bin/python setup.py build sdist
 
-pypi: dist
-	@poetry run twine upload dist/*.tar.gz
+pypi: dist | $(VENV)/bin/twine
+	$(VENV)/bin/twine upload dist/*.tar.gz
 
 # cleanup temp files
 clean:

@@ -36,14 +36,12 @@ setup(
     version=read_version(),
     description="\n".join(
         [
-            "A python application consisting of "
-            "an HTTP server, ZMQ Components and "
-            "a command-line tool to help put everything together"
+            "dataclasses for humans",
         ]
     ),
     long_description=local_file("README.rst"),
     entry_points={"console_scripts": ["ui-classes = uiclasses.cli:entrypoint"]},
-    url="https://github.com/gabrielfalcao/kube-python-app-example",
+    url="https://github.com/gabrielfalcao/ui-classes",
     packages=find_packages(exclude=["*tests*"]),
     include_package_data=True,
     package_data={"uiclasses": ["README.rst", "*.png", "*.rst", "docs/*", "docs/*/*"]},
