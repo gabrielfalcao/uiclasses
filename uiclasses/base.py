@@ -1,4 +1,3 @@
-import re
 import json
 import hashlib
 import dataclasses
@@ -318,7 +317,7 @@ class Model(DataBag, metaclass=MetaModel):
             ]
         )
 
-    def attribute_matches_glob(self, attribute_name: str, fnmatch_pattern: str) -> bool:
+    def attribute_matches(self, attribute_name: str, fnmatch_pattern: str) -> bool:
 
         """helper method to filter models by an attribute. This allows for
         :py:class:`~uiclasses.ModelList` to

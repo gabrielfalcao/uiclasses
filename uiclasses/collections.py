@@ -16,7 +16,7 @@ class IterableCollection(UserFriendlyObject):
 
 
     For example it supports filtering by instance attributes through a cal to the
-    :py:meth:`~uiclasses.Model.attribute_matches_glob` method of each children.
+    :py:meth:`~uiclasses.Model.attribute_matches` method of each children.
 
     Features:
 
@@ -79,7 +79,7 @@ class IterableCollection(UserFriendlyObject):
 
         """
         return self.filter(
-            lambda model: model.attribute_matches_glob(attribute_name, fnmatch_pattern)
+            lambda model: model.attribute_matches(attribute_name, fnmatch_pattern)
         )
 
     def filter(self, check: Callable[[Model], bool]) -> List[Model]:
