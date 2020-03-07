@@ -200,8 +200,33 @@ class MetaModel(type):
 
 
 class Model(DataBag, metaclass=MetaModel):
-    """Base model for data in all domains, from boto3 responses to
-    command-line output of kubernetes tools such as kubectl, kubectx.
+    """Base class for User-interface classes.
+
+    Allows declaring what instance attributes are visible via type
+    annotations or ``__visible_attributes__``.
+
+    Example:
+
+
+    .. code::
+
+       from uiclasses.base import Model
+
+       class BlogPost(Model):
+           id: int
+           title: str
+
+
+        post = BlogPost(
+            id=1,
+            title='test',
+            body='lorem ipsum dolor sit amet'
+        )
+
+        print(str(post))
+        print(repr(post))
+        print(post.format_robust_table())
+
     """
 
     __visible_attributes__: List[str]
