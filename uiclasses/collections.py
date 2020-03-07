@@ -28,7 +28,8 @@ class IterableCollection(UserFriendlyObject):
     - format pretty table for console based on __ui_attributes__ :meth:`~uiclasses.IterableCollection.format_pretty_table`
 
     """
-    __visible_attributes__ = ['model_class']
+
+    __visible_attributes__ = ["model_class"]
 
     def __repr__(self):
         return f"<{self.__ui_name__()} {list(self)}>"
@@ -114,7 +115,9 @@ class IterableCollection(UserFriendlyObject):
 
         """
         columns = self.get_table_columns(columns)
-        return [[model.__ui_attributes__().get(key) for key in columns] for model in self]
+        return [
+            [model.__ui_attributes__().get(key) for key in columns] for model in self
+        ]
 
     def get_table_columns_and_rows(self, columns: List[str] = None):
         """returns a 2-item tuple with columns names and row values of each
@@ -148,11 +151,13 @@ class IterableCollection(UserFriendlyObject):
 
     def validate_columns(self, columns):
 
-        mismatched_columns = set(columns).difference(self.__of_model__.__visible_attributes__)
+        mismatched_columns = set(columns).difference(
+            self.__of_model__.__visible_attributes__
+        )
         if mismatched_columns:
             raise ValueError(
-                f'the following columns are not available '
-                f'for {self.__of_model__}: {mismatched_columns}'
+                f"the following columns are not available "
+                f"for {self.__of_model__}: {mismatched_columns}"
             )
 
         return columns
@@ -180,7 +185,7 @@ class ModelList(list, IterableCollection):
         for index, child in enumerate(children):
             if not isinstance(child, model_class):
                 raise TypeError(
-                    f'cannot create {self.__class__.__name__} because value at index [{index}] is not a {model_class}: {child!r} {type(child)}'
+                    f"cannot create {self.__class__.__name__} because value at index [{index}] is not a {model_class}: {child!r} {type(child)}"
                 )
             items.append(child)
 
@@ -194,7 +199,7 @@ class ModelSet(OrderedSet, IterableCollection):
     """
 
     def __init__(self, children: List[Model]):
-        model_class = getattr(self, '__of_model__', None)
+        model_class = getattr(self, "__of_model__", None)
 
         if not isinstance(children, ITERABLES):
             raise TypeError(
@@ -205,7 +210,7 @@ class ModelSet(OrderedSet, IterableCollection):
         for index, child in enumerate(children):
             if not isinstance(child, model_class):
                 raise TypeError(
-                    f'cannot create {self.__class__.__name__} because value at index [{index}] is not a {model_class}: {child!r} {type(child)}'
+                    f"cannot create {self.__class__.__name__} because value at index [{index}] is not a {model_class}: {child!r} {type(child)}"
                 )
             items.append(child)
 

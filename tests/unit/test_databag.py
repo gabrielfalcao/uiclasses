@@ -23,13 +23,11 @@ def test_databag_traverse_to_section():
 
     # Then it returns
     str(d).should.equal("DataBag(section={'subsection': {'key': 'value'}})")
-    str(subsection).should.equal(
-        "DataBagChild 'section.subsection' of (key='value')"
-    )
+    str(subsection).should.equal("DataBagChild 'section.subsection' of (key='value')")
 
     # But when accessed with .get() it should be a plain dict
-    d.get('section').should.be.a(dict)
-    str(d.get('section')).should.equal("{'subsection': {'key': 'value'}}")
+    d.get("section").should.be.a(dict)
+    str(d.get("section")).should.equal("{'subsection': {'key': 'value'}}")
 
 
 def test_databag_traverse_to_value():
@@ -43,7 +41,7 @@ def test_databag_traverse_to_value():
 
     # Then it returns
     value.should.be.a(str)
-    value.should.equal('value')
+    value.should.equal("value")
 
 
 def test_databag_dict_interface():
@@ -60,18 +58,17 @@ def test_databag_dict_interface():
     list(data.keys()).should.equal(["chuck", "foo"])
     list(data.values()).should.equal(["norris", "bar"])
     list(data.items()).should.equal([("chuck", "norris"), ("foo", "bar")])
-    data.get('chuck').should.equal('norris')
+    data.get("chuck").should.equal("norris")
 
     # When I get a key
     data["chuck"].should.equal("norris")
 
     # And update the dict
-    data.update({
-        'foo': '42',
-        'another': 'field'
-    })
+    data.update({"foo": "42", "another": "field"})
 
     # Then it should work have the keys and values
     list(data.keys()).should.equal(["chuck", "foo", "another"])
     list(data.values()).should.equal(["norris", "42", "field"])
-    list(data.items()).should.equal([("chuck", "norris"), ("foo", "42"), ("another", "field")])
+    list(data.items()).should.equal(
+        [("chuck", "norris"), ("foo", "42"), ("another", "field")]
+    )

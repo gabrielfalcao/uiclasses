@@ -35,5 +35,9 @@ class TaskBoard(Model):
 
 
 def test_to_dict():
-    model = User({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
-    model.to_dict().should.equal({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
+    model = User(
+        {"id": "1", "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
+    model.to_dict().should.equal(
+        {"id": "1", "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
