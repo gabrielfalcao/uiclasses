@@ -53,7 +53,7 @@ html: $(DOCS_INDEX)
 docs: $(DOCS_INDEX)
 	open $(DOCS_INDEX)
 
-release: tests html-docs
+release: | clean bento unit functional tests html
 	@rm -rf dist/*
 	@./.release
 	@make pypi
@@ -61,7 +61,7 @@ release: tests html-docs
 bento: | $(BENTO_BIN)
 	$(BENTO_BIN) --agree --email=$(BENTO_EMAIL) check --all
 
-dist: clean bento unit functional tests html
+dist: | clean bento unit functional tests html
 	$(VENV)/bin/python setup.py build sdist
 
 pypi: dist | $(VENV)/bin/twine
