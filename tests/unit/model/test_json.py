@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
-from dataclasses import dataclass, field
-from uiclasses import Model
+from dataclasses import field
+from uiclasses import Model, errors
 
 
 class User(Model):
@@ -19,8 +19,10 @@ def test_from_json():
     model.should.be.a(User)
     model.to_dict().should.equal({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com', 'verified': True})
 
+    model.to_json().should.equal(json.dumps(model.to_dict()))
+
 
 def test_from_json_invalid():
     when_called = User.from_json.when.called_with('@not a valid json$')
 
-    when_called.should.have.raised('Expecting value: line 1 column 1 (char 0)')
+    when_called.should.have.raised(errors.InvalidJSON, "'@not a valid json$' cannot be parsed as a dict")

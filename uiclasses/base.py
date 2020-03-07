@@ -11,7 +11,7 @@ from functools import reduce
 
 from humanfriendly.tables import format_robust_table, format_pretty_table
 
-
+from . import errors
 from .meta import (
     is_builtin_class_except,
 )
@@ -26,6 +26,21 @@ basic_dataclass = dataclasses.dataclass(
     unsafe_hash=False,
     repr=False
 )
+
+
+def try_convert(value, convert):
+    try:
+        return convert(value)
+    except (ValueError, json.JSONDecodeError):
+        return value
+
+
+def try_int(s):
+    return try_convert(s, int)
+
+
+def try_json(string: str) -> dict:
+    return try_convert(string, json.loads)
 
 
 def traverse_dict_children(data, *keys, fallback=None):
@@ -50,14 +65,14 @@ class UserFriendlyObject(object):
         return self.__class__.__name__
 
     def __get_field_value__(self, field: Field) -> Any:
-        default = field.default or field.default_factory()
-        return getattr(self, field.name, default)
+        default_value = field.type()
+        return getattr(self, field.name, default_value)
 
     def __get_field_keyvalue__(self, field: Field) -> Tuple[str, Any]:
         return (field.name, self.__get_field_value__(field))
 
     def __ui_attributes__(self):
-        fields = dataclasses.fields(self.__class__)
+        fields = dataclasses.fields(self)
         return dict(map(self.__get_field_keyvalue__, fields))
 
     def __repr__(self):
@@ -88,17 +103,13 @@ class DataBag(UserFriendlyObject):
     def __bool__(self):
         return bool(self.__data__)
 
-    @property
-    def data(self):
-        return self.__data__
-
     def update(self, other: dict):
-        self.data.update(other or {})
+        self.__data__.update(other or {})
 
     def traverse(self, *keys, fallback=None):
         """attempts to retrieve the config value under the given nested keys
         """
-        value = traverse_dict_children(self.data, *keys, fallback=fallback)
+        value = traverse_dict_children(self.__data__, *keys, fallback=fallback)
         if isinstance(value, dict):
             return DataBagChild(value, *keys)
 
@@ -124,13 +135,13 @@ class DataBag(UserFriendlyObject):
         return self.__data__.keys()
 
     def items(self):
-        return self.data.items()
+        return self.__data__.items()
 
     def values(self):
-        return self.data.values()
+        return self.__data__.values()
 
     def get(self, *args, **kw):
-        return self.data.get(*args, **kw)
+        return self.__data__.get(*args, **kw)
 
     # other handy methods:
 
@@ -160,23 +171,6 @@ class DataBagChild(DataBag):
 
     def __ui_name__(self):
         return f"DataBagChild {self.attr!r} of "
-
-
-def try_int(s):
-    try:
-        return int(s)
-    except ValueError:
-        return s
-
-
-def try_json(string: str) -> dict:
-    return json.loads(string)
-
-
-def slugify(text: str, separator: str = "-"):
-    return re.sub(
-        fr"[{separator}]+", separator,
-        re.sub(r"[^a-zA-Z0-9-]+", separator, text).strip(separator))
 
 
 def is_builtin_model(target: type) -> bool:
@@ -262,6 +256,8 @@ class Model(DataBag, metaclass=MetaModel):
         for field in dataclasses.fields(self.__class__):
             if field.name not in kw:
                 continue
+
+            # value = try_convert(kw.pop(field.name), field.type)
             value = kw.pop(field.name)
             if field.type and not isinstance(value, field.type):
                 raise TypeError(
@@ -273,19 +269,16 @@ class Model(DataBag, metaclass=MetaModel):
         self.__data__ = __data__
         self.initialize(*args, **kw)
 
+    def initialize(self, *args, **kw):
+        """this method is a no-op, use it to take action after the model has
+        been completely instantiated without having to override __init__ and call super().
+        """
+
     def __eq__(self, other):
         if not isinstance(other, type(self)):
             return False
 
         return other.__ui_attributes__() == self.__ui_attributes__()
-
-    def __id__(self):
-        return sum(
-            filter(
-                lambda v: isinstance(v, int),
-                [try_int(self.get(k)) for k in self.__id_attributes__],
-            )
-        )
 
     def __hash__(self):
         values = dict(
@@ -293,15 +286,6 @@ class Model(DataBag, metaclass=MetaModel):
         )
         string = json.dumps(values)
         return int(hashlib.sha1(bytes(string, "ascii")).hexdigest(), 16)
-
-    def __nonzero__(self):
-        return any(list(self.__data__.values()))
-
-    def initialize(self, *args, **kw):
-        pass
-
-    def update(self, data: dict):
-        self.__data__.update(data)
 
     def serialize(self) -> dict:
         data = self.__data__.copy()
@@ -317,17 +301,14 @@ class Model(DataBag, metaclass=MetaModel):
     @classmethod
     def from_json(cls, json_string: str) -> "Model":
         data = try_json(json_string)
+        if not isinstance(data, dict):
+            raise errors.InvalidJSON(f'{json_string!r} cannot be parsed as a dict')
+
         return cls(data)
 
     def to_json(self, *args, **kw):
         kw["default"] = kw.pop("default", str)
         return json.dumps(self.to_dict(), *args, **kw)
-
-    def __getitem__(self, key):
-        return self.__data__.get(key, None)
-
-    def get(self, *args, **kw):
-        return self.__data__.get(*args, **kw)
 
     def __ui_attributes__(self):
         return dict(
@@ -338,6 +319,7 @@ class Model(DataBag, metaclass=MetaModel):
         )
 
     def attribute_matches_glob(self, attribute_name: str, fnmatch_pattern: str) -> bool:
+
         """helper method to filter models by an attribute. This allows for
         :py:class:`~uiclasses.ModelList` to
         :py:meth:`~uiclasses.ModelList.filter_by`.
