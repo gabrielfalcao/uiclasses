@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
-from dataclasses import dataclass, field
 from uiclasses import Model
+
+from humanfriendly.tables import (
+    format_robust_table,
+    format_pretty_table,
+)
 
 
 class User(Model):
@@ -37,23 +41,21 @@ def test_construct_with_dict():
     chuck.to_dict().should.equal({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
 
 
-def test_format_robust_table():
-    chuck = User({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
-    chuck.format_pretty_table().should.equal(
-        '-------------------------------------------\n'
-        '| \x1b[1;32mid\x1b[0m | \x1b[1;32musername\x1b[0m    | \x1b[1;32memail\x1b[0m                |\n'
-        '-------------------------------------------\n'
-        '|  1 | chucknorris | root@chucknorris.com |\n'
-        '-------------------------------------------'
-    )
-
-
 def test_format_pretty_table():
     chuck = User({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
-    chuck.format_pretty_table().should.equal(
-        '-------------------------------------------\n'
-        '| \x1b[1;32mid\x1b[0m | \x1b[1;32musername\x1b[0m    | \x1b[1;32memail\x1b[0m                |\n'
-        '-------------------------------------------\n'
-        '|  1 | chucknorris | root@chucknorris.com |\n'
-        '-------------------------------------------'
-    )
+    chuck.format_pretty_table().should.equal(format_pretty_table(
+        [
+            [1, 'chucknorris', 'root@chucknorris.com'],
+        ],
+        ['id', 'username', 'email'],
+    ))
+
+
+def test_format_robust_table():
+    chuck = User({'id': '1', 'username': 'chucknorris', 'email': 'root@chucknorris.com'})
+    chuck.format_robust_table().should.equal(format_robust_table(
+        [
+            [1, 'chucknorris', 'root@chucknorris.com'],
+        ],
+        ['id', 'username', 'email'],
+    ))
