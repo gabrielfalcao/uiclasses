@@ -168,8 +168,8 @@ class IterableCollection(UserFriendlyObject):
 
 
 class ModelList(list, IterableCollection):
-    """Implementation of :py:class:`uiclasses.IterableCollection` with
-    :py:class:`list`.
+    """Implementation of :py:class:`uiclasses.IterableCollection` for the
+    :py:class:`list` type.
 
     """
 
@@ -191,11 +191,13 @@ class ModelList(list, IterableCollection):
 
         super().__init__(map(model_class, items))
 
+    def unique(self) -> 'ModelSet':
+        """returns a :py:class:`~uiclasses.collections.ModelSet` of all unique items in this :py:class:`~uiclasses.collections.ModelList`"""
+        return self.__of_model__.Set(self)
 
 class ModelSet(OrderedSet, IterableCollection):
-    """Implementation of :py:class:`uiclasses.IterableCollection` with
-    :py:class:`ordered_set.OrderedSet`.
-
+    """Implementation of :py:class:`uiclasses.IterableCollection` for the
+    `OrderedSet <https://pypi.org/project/ordered-set/>`_ type.
     """
 
     def __init__(self, children: List[Model]):

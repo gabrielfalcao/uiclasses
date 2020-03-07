@@ -1,10 +1,12 @@
 ui-classes
 ##########
 
-`Data Classes <https://docs.python.org/3/library/dataclasses.html>`_ with superpowers:
-
-- Objects are presentable in user interfaces.
+- Powered by `Python 3 Data Classes <https://docs.python.org/3/library/dataclasses.html>`_.
+- Objects optimized for user interfaces.
+- Methods to traverse nested dicts, convert to and from json
 - ModelList and ModelSet collections for robust manipulation of collections of models.
+- No I/O happens in models.
+- Collections can be easily cached to leverage responsive user interfaces.
 
 
 
@@ -14,7 +16,7 @@ Installation
 
 .. code:: bash
 
-   pip install ui-classes
+   pip install uiclasses
 
 
 Basic Usage

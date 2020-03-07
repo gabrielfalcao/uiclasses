@@ -11,6 +11,7 @@ docs_source_path = os.path.abspath(os.path.dirname(__file__))
 project_root = os.path.abspath(os.path.join(docs_source_path, "..", ".."))
 
 sys.path.insert(0, project_root)
+doctest_path = [project_root]
 
 
 from uiclasses.version import version
@@ -74,6 +75,7 @@ html_static_path = ['_static']
 
 
 extensions = [
+    "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
@@ -84,3 +86,9 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx.ext.autosummary",
 ]
+
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "requests": ("https://requests.kennethreitz.org/en/master/", None),
+}

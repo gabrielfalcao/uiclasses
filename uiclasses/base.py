@@ -1,6 +1,7 @@
 import json
 import hashlib
 import dataclasses
+from typing import NewType
 
 from dataclasses import Field
 
@@ -12,45 +13,19 @@ from humanfriendly.tables import format_robust_table, format_pretty_table
 
 from . import errors
 from .meta import is_builtin_class_except
-
-
-COLLECTION_TYPES = {}
-
-
-basic_dataclass = dataclasses.dataclass(
-    init=False, eq=False, unsafe_hash=False, repr=False
+from .utils import (
+    basic_dataclass,
+    repr_attributes,
+    traverse_dict_children,
+    try_int,
+    try_json,
+    try_convert,
+    extract_attribute_from_class_definition,
+    list_field_names_from_dataclass,
+    list_visible_field_names_from_dataclass,
 )
 
-
-def try_convert(value, convert):
-    try:
-        return convert(value)
-    except (ValueError, json.JSONDecodeError):
-        return value
-
-
-def try_int(s):
-    return try_convert(s, int)
-
-
-def try_json(string: str) -> dict:
-    return try_convert(string, json.loads)
-
-
-def traverse_dict_children(data, *keys, fallback=None):
-    """attempts to retrieve the config value under the given nested keys
-    """
-    value = reduce(lambda d, l: d.get(l, None) or {}, keys, data)
-    return value or fallback
-
-
-def repr_attributes(attributes: dict, separator: str = " "):
-    """used for pretty-printing the attributes of a model
-    :param attributes: a dict
-
-    :returns: a string
-    """
-    return separator.join([f"{k}={v!r}" for k, v in attributes.items()])
+COLLECTION_TYPES = {}
 
 
 @basic_dataclass
@@ -151,7 +126,8 @@ class DataBag(UserFriendlyObject):
 
 
 class DataBagChild(DataBag):
-    """
+    """Represents a nested dict within a DataBag that is aware of its
+    location within the parent.
     """
 
     def __init__(self, data, *location):
@@ -172,20 +148,6 @@ def is_builtin_model(target: type) -> bool:
     """returns ``True`` if the given type is a model subclass"""
 
     return is_builtin_class_except(target, ["MetaModel", "Model", "DataBag"])
-
-
-def extract_attribute_from_class_definition(
-    name: str, cls: Type, attrs: dict, default: Any = None
-) -> Any:
-    return getattr(cls, name, attrs.get(name)) or default
-
-
-def list_visible_field_names_from_dataclass(cls: Type):
-    return [f.name for f in dataclasses.fields(cls) if f.repr]
-
-
-def list_field_names_from_dataclass(cls: Type):
-    return [f.name for f in dataclasses.fields(cls)]
 
 
 class MetaModel(type):
@@ -214,18 +176,25 @@ class MetaModel(type):
             "__id_attributes__", cls, attrs, default=[]
         )
 
-        ids.extend(
-            filter(lambda name: name not in ids, list_field_names_from_dataclass(cls))
-        )
+        ids.extend(filter(
+            lambda name: name not in ids,
+            list_field_names_from_dataclass(cls)
+        ))
         attrs["__id_attributes__"] = ids
         cls.__id_attributes__ = ids
 
+        cls.Type = NewType(name, cls)
+
+        SetName = f"{name}.Set"
         cls.Set = attrs["Set"] = type(
-            f"{name}.Set", (COLLECTION_TYPES[set],), {"__of_model__": cls}
+            SetName, (COLLECTION_TYPES[set],), {"__of_model__": cls}
         )
+        cls.Set.Type = NewType(SetName, cls.Set)
+        ListName = f"{name}.List"
         cls.List = attrs["List"] = type(
-            f"{name}.List", (COLLECTION_TYPES[list],), {"__of_model__": cls}
+            ListName, (COLLECTION_TYPES[list],), {"__of_model__": cls}
         )
+        cls.List.Type = NewType(ListName, cls.List)
 
         super().__init__(name, bases, attrs)
 
