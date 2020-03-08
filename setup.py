@@ -48,5 +48,20 @@ setup(
     maintainer="Gabriel Falcão",
     maintainer_email="gabriel@nacaolivre.org",
     install_requires=local_file("requirements.txt").splitlines(),
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Console',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: POSIX',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3.6.4',
+        'Programming Language :: Python :: 3.6.5',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: Implementation',
+        'Programming Language :: Python :: Implementation :: CPython',
+    ],
+
     dependency_links=[],
 )
