@@ -22,7 +22,7 @@ class VersionFinder(ast.NodeVisitor):
             if node.targets[0].id == self.VARIABLE_NAME:
                 self.version = node.value.s
         except Exception:
-            pass
+            self.version = None
 
 
 def read_version():
