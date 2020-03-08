@@ -2,11 +2,11 @@ UIClasses - Data-Modeling for User Interfaces
 ##############################################
 
 
-.. image:: https://img.shields.io/codecov/c/github/gabrielfalcao/uiclasses
-   :target: https://codecov.io/gh/gabrielfalcao/uiclasses
+.. image:: https://img.shields.io/codecov/c/github/newstore-oss/uiclasses
+   :target: https://codecov.io/gh/newstore-oss/uiclasses
 
-.. image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-tests
-   :target: https://github.com/gabrielfalcao/uiclasses/actions
+.. image:: https://img.shields.io/github/workflow/status/newstore-oss/uiclasses/python-tests
+   :target: https://github.com/newstore-oss/uiclasses/actions
 
 
 - Powered by `Python 3 Data Classes <https://docs.python.org/3/library/dataclasses.html>`_.
@@ -49,14 +49,14 @@ Basic Usage
    print(published.format_pretty_table())
 
 
-.. image:: https://github.com/gabrielfalcao/uiclasses/raw/master/docs/source/_static/screenshot-blog-list-pretty-table.png
+.. image:: https://github.com/newstore-oss/uiclasses/raw/master/docs/source/_static/screenshot-blog-list-pretty-table.png
 
 
 .. code:: python
 
    print(published.format_robust_table())
 
-.. image:: https://github.com/gabrielfalcao/uiclasses/raw/master/docs/source/_static/screenshot-blog-list-robust-table.png
+.. image:: https://github.com/newstore-oss/uiclasses/raw/master/docs/source/_static/screenshot-blog-list-robust-table.png
 
 
 

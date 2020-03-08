@@ -37,9 +37,10 @@ jobs:
     - name: Functional Tests
       run: make functional
 
-    - name: Tests
+    - name: Randomize All Tests
       run: make tests
 
-    - uses: codecov/codecov-action@v1
+    - name: "Upload coverage results to codecov.io"
+      uses: codecov/codecov-action@v1
       with:
         file: ./coverage.xml # optional

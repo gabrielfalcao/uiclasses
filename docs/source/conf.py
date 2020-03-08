@@ -36,8 +36,8 @@ from uiclasses.version import version
 # -- Project information -----------------------------------------------------
 
 project = "UIClasses"
-copyright = "2020, Gabriel Falcão"
-author = "Gabriel Falcão"
+copyright = "2020, NewStore GmbH"
+author = "NewStore GmbH"
 
 # The full version, including alpha/beta/rc tags
 release = "0.0.4"
