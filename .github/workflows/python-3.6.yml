@@ -22,7 +22,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: .venv
-        key: ${{ runner.os }}-${{ hashFiles('*.txt') }}
+        key: ${{ runner.os }}-${{ hashFiles('*.txt') }}-python3.6
 
     - uses: actions/checkout@v1
     - id: bento
