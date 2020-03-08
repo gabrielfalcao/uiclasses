@@ -11,6 +11,24 @@ UIClasses - Data-Modeling for User Interfaces
 .. image:: https://img.shields.io/readthedocs/uiclasses
    :target: https://uiclasses.readthedocs.io/
 
+.. image:: https://img.shields.io/github/license/NewStore-oss/uiclasses
+   :target: https://github.com/NewStore-oss/uiclasses/blob/master/LICENSE
+
+.. image:: https://img.shields.io/pypi/v/uiclasses
+   :target: https://pypi.org/project/uiclasses
+
+.. image:: https://img.shields.io/pypi/l/uiclasses
+   :target: https://pypi.org/project/uiclasses
+
+.. image:: https://img.shields.io/pypi/format/uiclasses
+   :target: https://pypi.org/project/uiclasses
+
+.. image:: https://img.shields.io/pypi/status/uiclasses
+   :target: https://pypi.org/project/uiclasses
+
+.. image:: https://img.shields.io/pypi/pyversions/uiclasses
+   :target: https://pypi.org/project/uiclasses
+
 
 - Powered by `Python 3 Data Classes <https://docs.python.org/3/library/dataclasses.html>`_.
 - Objects optimized for user interfaces.
