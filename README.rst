@@ -1,12 +1,13 @@
 UIClasses - Data-Modeling for User Interfaces
 ##############################################
 
-.. |ci-shield| image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-tests
-.. |codecov-shield| image:: https://img.shields.io/codecov/c/github/gabrielfalcao/uiclasses
+.. |action| image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-tests
+.. |codecov| image:: https://img.shields.io/codecov/c/github/gabrielfalcao/uiclasses
 
- +--------------+--------------------+
- | |ci-shield|  +  |codecov-shield|  +
- +--------------+--------------------+
+ +----------+-----------+
+ | |action| | |codecov| +
+ +----------+-----------+
+
 
 
 
