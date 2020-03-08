@@ -33,3 +33,4 @@
 :include .gitignore
 setup.py
 .release
+*.rst
