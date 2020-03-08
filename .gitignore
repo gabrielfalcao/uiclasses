@@ -65,3 +65,5 @@ pip-wheel-metadata
 operations/helm/charts/
 flask_session/
 .state.json
+
+coverage.xml
