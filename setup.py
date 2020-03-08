@@ -37,7 +37,7 @@ setup(
     description="\n".join(["Data-Modeling for User Interfaces"]),
     long_description=local_file("README.rst"),
     entry_points={"console_scripts": ["uiclasses = uiclasses.cli:entrypoint"]},
-    url="https://github.com/newstore-oss/uiclasses",
+    url="https://github.com/NewStore-oss/uiclasses",
     packages=find_packages(exclude=["*tests*"]),
     include_package_data=True,
     package_data={"uiclasses": ["README.rst", "*.png", "*.rst", "docs/*", "docs/*/*"]},
