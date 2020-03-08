@@ -38,6 +38,12 @@ setup(
     long_description=local_file("README.rst"),
     entry_points={"console_scripts": ["uiclasses = uiclasses.cli:entrypoint"]},
     url="https://github.com/NewStore-oss/uiclasses",
+    project_urls={
+        "Documentation": "https://uiclasses.readthedocs.io/en/latest/",
+        "Source Code": "https://github.com/NewStore-oss/uiclasses",
+        "Issue Tracker": "https://github.com/NewStore-oss/uiclasses/issues",
+        "Test Coverage": "https://codecov.io/gh/NewStore-oss/uiclasses",
+    },
     packages=find_packages(exclude=["*tests*"]),
     include_package_data=True,
     package_data={"uiclasses": ["README.rst", "*.png", "*.rst", "docs/*", "docs/*/*"]},
