@@ -35,3 +35,7 @@ jobs:
 
     - name: Tests
       run: make tests
+
+    - uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml # optional
