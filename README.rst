@@ -8,22 +8,22 @@ UIClasses - Data-Modeling for User Interfaces
 .. image:: https://img.shields.io/codecov/c/github/NewStore-oss/uiclasses
    :target: https://codecov.io/gh/NewStore-oss/uiclasses
 
-.. image:: https://img.shields.io/github/workflow/status/NewStore-oss/uiclasses/python-3.6
+.. image:: https://img.shields.io/github/workflow/status/NewStore-oss/uiclasses/python-3.6?label=python%203.6
    :target: https://github.com/NewStore-oss/uiclasses/actions
 
-.. image:: https://img.shields.io/github/workflow/status/NewStore-oss/uiclasses/python-3.7
+.. image:: https://img.shields.io/github/workflow/status/NewStore-oss/uiclasses/python-3.7?label=python%203.7
    :target: https://github.com/NewStore-oss/uiclasses/actions
 
 .. image:: https://img.shields.io/readthedocs/uiclasses
    :target: https://uiclasses.readthedocs.io/
 
-.. image:: https://img.shields.io/github/license/NewStore-oss/uiclasses
+.. image:: https://img.shields.io/github/license/NewStore-oss/uiclasses?label=Github%20License
    :target: https://github.com/NewStore-oss/uiclasses/blob/master/LICENSE
 
 .. image:: https://img.shields.io/pypi/v/uiclasses
    :target: https://pypi.org/project/uiclasses
 
-.. image:: https://img.shields.io/pypi/l/uiclasses
+.. image:: https://img.shields.io/pypi/l/uiclasses?label=PyPi%20License
    :target: https://pypi.org/project/uiclasses
 
 .. image:: https://img.shields.io/pypi/format/uiclasses
