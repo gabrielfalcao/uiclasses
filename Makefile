@@ -68,7 +68,7 @@ pypi: dist | $(VENV)/bin/twine
 
 # cleanup temp files
 clean:
-	rm -rf $(HTML_ROOT) build
+	rm -rf $(HTML_ROOT) build dist
 
 
 # purge all virtualenv and temp files, causes everything to be rebuilt
