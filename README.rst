@@ -1,6 +1,10 @@
 uiclasses - dataclasses for humans
 ##################################
 
+.. image:: https://img.shields.io/codecov/c/github/gabrielfalcao/uiclasses?style=social
+
+.. image:: https://img.shields.io/pypi/dm/uiclasses?style=social
+
 - Powered by `Python 3 Data Classes <https://docs.python.org/3/library/dataclasses.html>`_.
 - Objects optimized for user interfaces.
 - Methods to traverse nested dicts, convert to and from json
@@ -41,15 +45,14 @@ Basic Usage
    print(published.format_pretty_table())
 
 
-.. image:: docs/source/_static/screenshot-blog-list-pretty-table.png
+.. image:: https://github.com/gabrielfalcao/uiclasses/raw/master/docs/source/_static/screenshot-blog-list-pretty-table.png
 
 
 .. code:: python
 
    print(published.format_robust_table())
 
-
-.. image:: docs/source/_static/screenshot-blog-list-robust-table.png
+.. image:: https://github.com/gabrielfalcao/uiclasses/raw/master/docs/source/_static/screenshot-blog-list-robust-table.png
 
 
 
