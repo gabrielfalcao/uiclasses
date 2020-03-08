@@ -1,5 +1,5 @@
-uiclasses - Data-Modeling for User Interfaces
-##################################
+UIClasses - Data-Modeling for User Interfaces
+##############################################
 
 .. image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-tests
 .. image:: https://img.shields.io/codecov/c/github/gabrielfalcao/uiclasses
