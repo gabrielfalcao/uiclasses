@@ -24,8 +24,12 @@ jobs:
         path: .venv
         key: ${{ runner.os }}-${{ hashFiles('*.txt') }}
 
-    - name: Bento
-      run: make bento
+    - uses: actions/checkout@v1
+    - id: bento
+      name: Bento
+      uses: returntocorp/bento-action@v1
+      with:
+        acceptTermsWithEmail: gabriel@nacaolivre.org
 
     - name: Unit Tests
       run: make unit
