@@ -60,7 +60,7 @@ release: | clean bento unit functional tests html
 bento: | $(BENTO_BIN)
 	$(BENTO_BIN) --agree --email=$(BENTO_EMAIL) check --all
 
-dist: | clean bento unit functional tests html
+dist: | clean
 	$(VENV)/bin/python setup.py build sdist
 
 pypi: dist | $(VENV)/bin/twine
