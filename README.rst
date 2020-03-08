@@ -1,4 +1,4 @@
-uiclasses - dataclasses for humans
+uiclasses - Data-Modeling for User Interfaces
 ##################################
 
 .. image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-tests

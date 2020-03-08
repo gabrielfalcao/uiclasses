@@ -5,7 +5,7 @@ DOCS_ROOT		:= $(GIT_ROOT)/docs
 HTML_ROOT		:= $(DOCS_ROOT)/build/html
 VENV_ROOT		:= $(GIT_ROOT)/.venv
 VENV			?= $(VENV_ROOT)
-BENTO_BIN		:= $(VENV)/bin/bento
+BENTO_BIN		:= $(shell which bento)
 DOCS_INDEX		:= $(HTML_ROOT)/index.html
 BENTO_EMAIL		:= gabriel@nacaolivre.org
 
@@ -23,9 +23,6 @@ $(VENV)/bin/sphinx-build $(VENV)/bin/twine $(VENV)/bin/nosetests $(VENV)/bin/pyt
 	test -e $(VENV)/bin/pip || make $(VENV)
 	$(VENV)/bin/pip install -r development.txt
 	$(VENV)/bin/pip install -e .
-
-$(BENTO_BIN): | $(VENV)/bin/pip
-	$(VENV)/bin/pip install bento-cli
 
 # Runs the unit and functional tests
 tests: $(VENV)/bin/nosetests  # runs all tests
