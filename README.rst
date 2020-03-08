@@ -1,9 +1,9 @@
 uiclasses - dataclasses for humans
 ##################################
 
-.. image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-tests/master
+.. image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-tests
 .. image:: https://img.shields.io/codecov/c/github/gabrielfalcao/uiclasses
-.. image:: https://img.shields.io/pypi/dm/uiclasses
+.. image:: https://img.shields.io/pypi/dd/uiclasses
 
 - Powered by `Python 3 Data Classes <https://docs.python.org/3/library/dataclasses.html>`_.
 - Objects optimized for user interfaces.
