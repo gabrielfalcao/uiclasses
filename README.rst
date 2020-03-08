@@ -5,7 +5,10 @@ UIClasses - Data-Modeling for User Interfaces
 .. image:: https://img.shields.io/codecov/c/github/NewStore-oss/uiclasses
    :target: https://codecov.io/gh/NewStore-oss/uiclasses
 
-.. image:: https://img.shields.io/github/workflow/status/NewStore-oss/uiclasses/python-tests
+.. image:: https://img.shields.io/github/workflow/status/NewStore-oss/uiclasses/python-3.6
+   :target: https://github.com/NewStore-oss/uiclasses/actions
+
+.. image:: https://img.shields.io/github/workflow/status/NewStore-oss/uiclasses/python-3.7
    :target: https://github.com/NewStore-oss/uiclasses/actions
 
 .. image:: https://img.shields.io/readthedocs/uiclasses
