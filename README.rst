@@ -1,6 +1,8 @@
 uiclasses - dataclasses for humans
 ##################################
 
+.. image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-tests/master?style=social
+
 .. image:: https://img.shields.io/codecov/c/github/gabrielfalcao/uiclasses?style=social
 
 .. image:: https://img.shields.io/pypi/dm/uiclasses?style=social
