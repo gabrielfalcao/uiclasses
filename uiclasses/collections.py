@@ -63,7 +63,7 @@ class IterableCollection(UserFriendlyObject):
 
         .. code::
 
-           x = ModelList([MyModel({"id": 2}), MyModel({"id": 3})])
+           x = MyModel.List([MyModel({"id": 2}), MyModel({"id": 3})])
            result = x.sorted(key=lambda model: model.id)
 
         """
@@ -78,8 +78,8 @@ class IterableCollection(UserFriendlyObject):
 
         .. code::
 
-           x = ModelList([MyModel({"id": 2}), MyModel({"id": 3})])
-           result = x.sort_by('id')
+           x = MyModel.List([MyModel({"id": 2}), MyModel({"id": 3})])
+           result = x.sorted_by('id')
 
         """
         return self.sorted(
@@ -94,7 +94,7 @@ class IterableCollection(UserFriendlyObject):
 
         .. code::
 
-           x = ModelList([MyModel({"name": 'chucknorris'}), MyModel({"name": 'foobar'})])
+           x = MyModel.List([MyModel({"name": 'chucknorris'}), MyModel({"name": 'foobar'})])
            result = x.filter_by('name', '*norris*')
 
         """
@@ -109,7 +109,7 @@ class IterableCollection(UserFriendlyObject):
 
         .. code::
 
-           x = ModelList([MyModel({"id": 2}), MyModel({"id": 3})])
+           x = MyModel.List([MyModel({"id": 2}), MyModel({"id": 3})])
            result = x.filter(key=lambda model: model.id)
         """
         results = filter(check, self)

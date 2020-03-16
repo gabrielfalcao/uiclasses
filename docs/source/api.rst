@@ -67,7 +67,7 @@ UserFriendlyObject
 DataBagChild
 ------------
 
-.. autoclass:: uiclasses.DataBag
+.. autoclass:: uiclasses.DataBagChild
 
 
 IterableColletion
