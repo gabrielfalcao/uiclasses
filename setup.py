@@ -53,7 +53,7 @@ setup(
     author_email="opensource+pypi@newstore.com",
     maintainer="Gabriel Falcão",
     maintainer_email="gabriel@nacaolivre.org",
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     install_requires=local_file("requirements.txt").splitlines(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",

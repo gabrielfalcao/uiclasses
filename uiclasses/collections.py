@@ -1,27 +1,29 @@
 # Copyright (c) 2020 NewStore GmbH
 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation files
+# (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
 
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
 import itertools
 from .base import Model, UserFriendlyObject
 from .base import COLLECTION_TYPES
-from typing import List, Set
+from typing import Iterable
 from typing import Callable
 from ordered_set import OrderedSet
 from humanfriendly.tables import format_robust_table, format_pretty_table
@@ -87,7 +89,7 @@ class IterableCollection(UserFriendlyObject):
             **kw,
         )
 
-    def filter_by(self, attribute_name: str, fnmatch_pattern: str) -> List[Model]:
+    def filter_by(self, attribute_name: str, fnmatch_pattern: str) -> Iterable[Model]:
         """filter by a single attribute of the model children.
 
         Example:
@@ -102,7 +104,7 @@ class IterableCollection(UserFriendlyObject):
             lambda model: model.attribute_matches(attribute_name, fnmatch_pattern)
         )
 
-    def filter(self, check: Callable[[Model], bool]) -> List[Model]:
+    def filter(self, check: Callable[[Model], bool]) -> Iterable[Model]:
         """returns a new ``ModelList`` with this collections' children filter.
 
         Example:
@@ -115,7 +117,7 @@ class IterableCollection(UserFriendlyObject):
         results = filter(check, self)
         return self.__class__(results)
 
-    def get_table_columns(self, columns: List[str] = None):
+    def get_table_columns(self, columns: Iterable[str] = None):
         """proxy to :py:meth:`~uiclasses.base.Model.get_table_columns`
         """
         available_columns = self.__of_model__.__visible_attributes__
@@ -124,7 +126,7 @@ class IterableCollection(UserFriendlyObject):
 
         return self.validate_columns(columns)
 
-    def get_table_rows(self, columns: List[str] = None):
+    def get_table_rows(self, columns: Iterable[str] = None):
         """returns a list of values from the __ui_attributes__ of each child of this collection.
 
         Used by
@@ -138,7 +140,7 @@ class IterableCollection(UserFriendlyObject):
             [model.__ui_attributes__().get(key) for key in columns] for model in self
         ]
 
-    def get_table_columns_and_rows(self, columns: List[str] = None):
+    def get_table_columns_and_rows(self, columns: Iterable[str] = None):
         """returns a 2-item tuple with columns names and row values of each
         child of this collection.
 
@@ -152,7 +154,7 @@ class IterableCollection(UserFriendlyObject):
         rows = self.get_table_rows(columns)
         return columns, rows
 
-    def format_robust_table(self, columns: List[str] = None):
+    def format_robust_table(self, columns: Iterable[str] = None):
         """returns a string with a robust table ready to be printed on a terminal.
 
         powered by :py:func:`humanfriendly.tables.format_robust_table`
@@ -160,7 +162,7 @@ class IterableCollection(UserFriendlyObject):
         columns, rows = self.get_table_columns_and_rows(columns)
         return format_robust_table(rows, columns)
 
-    def format_pretty_table(self, columns: List[str] = None):
+    def format_pretty_table(self, columns: Iterable[str] = None):
         """returns a string with a pretty table ready to be printed on a terminal.
 
         powered by :py:func:`humanfriendly.tables.format_pretty_table`
@@ -181,7 +183,7 @@ class IterableCollection(UserFriendlyObject):
 
         return columns
 
-    def to_dict(self) -> List[dict]:
+    def to_dict(self) -> Iterable[dict]:
         """calls ``.to_dict()`` in each children of this collection."""
         return [m.to_dict() for m in self]
 
@@ -192,7 +194,7 @@ class ModelList(list, IterableCollection):
 
     """
 
-    def __init__(self, children: List[Model]):
+    def __init__(self, children: Iterable[Model]):
         model_class = self.__of_model__
 
         if not isinstance(children, ITERABLES):
@@ -222,7 +224,7 @@ class ModelSet(OrderedSet, IterableCollection):
     `OrderedSet <https://pypi.org/project/ordered-set/>`_ type.
     """
 
-    def __init__(self, children: List[Model]):
+    def __init__(self, children: Iterable[Model]):
         model_class = getattr(self, "__of_model__", None)
 
         if not isinstance(children, ITERABLES):
