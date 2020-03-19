@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import itertools
+from types import GeneratorType
 from .base import Model, UserFriendlyObject
 from .base import COLLECTION_TYPES
 from typing import Iterable
@@ -28,7 +29,7 @@ from typing import Callable
 from ordered_set import OrderedSet
 from humanfriendly.tables import format_robust_table, format_pretty_table
 
-ITERABLES = (list, tuple, itertools.chain, set, map, filter)
+ITERABLES = (list, tuple, itertools.chain, set, map, filter, GeneratorType)
 
 
 class IterableCollection(UserFriendlyObject):

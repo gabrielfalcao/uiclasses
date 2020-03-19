@@ -9,6 +9,13 @@ class BlogPost(Model):
     body: str
 
 
+def test_from_generator():
+    generator = (BlogPost(id=x, title=f'title {x}', body=f'body {x}') for x in range(100))
+    result = BlogPost.List(generator)
+    result.should.be.a(ModelList)
+    result.should.have.length_of(100)
+
+
 def test_to_dict():
 
     post1 = BlogPost(dict(id=1, title="title 1", body="body 1"))
