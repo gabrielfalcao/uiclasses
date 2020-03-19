@@ -13,6 +13,7 @@ UIClasses - Data-Modeling for User Interfaces
 
    tutorial
    api
+   changelog
 
 Indices and tables
 ==================
