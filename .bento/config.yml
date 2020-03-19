@@ -34,6 +34,7 @@ tools:
     run: true
   flake8:
     ignore:
+    - no-next-method
     - bad-wildcard-import
     - bare-except-bugbear
     - no-getattr

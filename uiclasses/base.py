@@ -41,7 +41,7 @@ from .utils import (
     traverse_dict_children,
     try_int,
     try_json,
-    try_convert,
+    try_dict,
     extract_attribute_from_class_definition,
     list_field_names_from_dataclass,
     list_visible_field_names_from_dataclass,
@@ -259,6 +259,7 @@ class Model(DataBag, metaclass=MetaModel):
         if isinstance(__data__, Model):
             __data__ = __data__.serialize()
 
+        __data__ = try_dict(__data__)
         if not isinstance(__data__, dict):
             raise TypeError(
                 f"{self.__class__.__name__} received a non-dict "

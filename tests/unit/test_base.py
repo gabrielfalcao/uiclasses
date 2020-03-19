@@ -4,10 +4,49 @@ from uiclasses import Model
 from humanfriendly.tables import format_robust_table, format_pretty_table
 
 
+class AlmostDict(object):
+    def __init__(self, data):
+        self.data = data
+
+    def __getitem__(self, key):
+        return self.data.__getitem__(key)
+
+    def __setitem__(self, key, value):
+        return self.data.__setitem__(key, value)
+
+    def keys(self):
+        return self.data.keys()
+
+    def values(self):
+        return self.data.values()
+
+    def items(self):
+        return self.data.items()
+
+    def __iter__(self):
+        return self.data.__iter__()
+
+    def next(self):
+        return self.data.next()
+
+
 class User(Model):
     __visible_attributes__ = ["id", "username", "email"]
     id: int
     username: str
+
+
+def test_construct_with_dict_like_object():
+    # Given an object that is not a dict but behaves like one
+    almost = AlmostDict(dict(id=1, username="chucknorris", email="root@chucknorris.com"))
+
+    # When I instantiate a model with it
+    chuck = User(almost)
+
+    # Then it should work
+    chuck.to_dict().should.equal(
+        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
 
 
 def test_construct_with_kwargs():

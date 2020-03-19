@@ -45,6 +45,14 @@ def try_convert(value: Any, convert: Callable) -> Any:
         return value
 
 
+def try_dict(value):
+    """tries to convert the given value to :py:class:`dict`, returns the
+    value untouched in case of failure.
+
+    Does not emit logs."""
+    return try_convert(value, dict)
+
+
 def try_int(value):
     """tries to convert the given value to :py:class:`int`, returns the
     value untouched in case of failure.
