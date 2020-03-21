@@ -420,7 +420,7 @@ def cast_field(field, value):
     if field.type == bool:
         value = parse_bool(value)
 
-    if isinstance(field.type, (typing._SpecialForm, typing._GenericAlias)):
+    if isinstance(field.type, (type(typing.Any), type(typing.Generic))):
         pass  # can't cast from typing.Any or typing.Generic
 
     elif isinstance(field.type, PropertyMetadata):

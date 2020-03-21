@@ -3,11 +3,17 @@
 Release History
 ---------------
 
+Changes in 2.0.2
+~~~~~~~~~~~~~~~~
+
+- fix python 3.6 support.
+
 Changes in 2.0.1
 ~~~~~~~~~~~~~~~~
 
 - don't try to cast annotations containing ``typing.Generic`` or
   ``typing.Any``.
+
 
 Changes in 2.0.0
 ~~~~~~~~~~~~~~~~
