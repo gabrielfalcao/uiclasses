@@ -19,7 +19,7 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+import sys
 import json
 import hashlib
 import typing
@@ -56,6 +56,11 @@ from . import typing as internal_typing
 from .typing import PropertyMetadata, parse_bool
 
 COLLECTION_TYPES = {}
+
+if sys.version_info < (3, 7, 0):
+    types_without_cast_support = (type(typing.Any), type(typing.Generic))
+else:
+    types_without_cast_support = (typing._SpecialForm, typing._GenericAlias)
 
 
 @basic_dataclass
@@ -420,7 +425,7 @@ def cast_field(field, value):
     if field.type == bool:
         value = parse_bool(value)
 
-    if isinstance(field.type, (type(typing.Any), type(typing.Generic))):
+    if isinstance(field.type, types_without_cast_support):
         pass  # can't cast from typing.Any or typing.Generic
 
     elif isinstance(field.type, PropertyMetadata):

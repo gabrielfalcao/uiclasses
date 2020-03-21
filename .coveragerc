@@ -18,3 +18,4 @@ exclude_lines =
     if 0:
     if __name__ == .__main__.:
     version\s*=\s*["']\d+[.]\d+[.]\d+["']
+    if sys.version_info
