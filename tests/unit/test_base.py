@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from typing import Any, Type, TypeVar, Generic
 from uiclasses import Model
 
 from humanfriendly.tables import format_robust_table, format_pretty_table
@@ -6,10 +7,25 @@ from humanfriendly.tables import format_robust_table, format_pretty_table
 from .helpers import AlmostDict
 
 
+T = TypeVar("T")
+
+
+class Config(Model):
+    data: Any
+    type: Type
+    generic: Generic[T]
+
+
 class User(Model):
     __visible_attributes__ = ["id", "username", "email"]
     id: int
     username: str
+
+
+def test_casting_generics_and_special_types():
+    conf1 = Config({"data": {}, "type": str, "generic": [None]})
+
+    conf1.to_dict().should.equal({"data": {}, "type": str, "generic": [None]})
 
 
 def test_construct_with_dict_like_object():

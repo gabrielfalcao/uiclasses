@@ -419,12 +419,13 @@ def cast_field(field, value):
     name = field.name
     if field.type == bool:
         value = parse_bool(value)
-    if isinstance(field.type, PropertyMetadata):
+
+    if isinstance(field.type, (typing._SpecialForm, typing._GenericAlias)):
+        pass  # can't cast from typing.Any or typing.Generic
+
+    elif isinstance(field.type, PropertyMetadata):
         value = field.type.cast(value)
 
-    # elif isinstance(field.type, (typing._SpecialForm, typing._GenericAlias)):
-    #     # can't cast from typing.Any or typing.Generic
-    #     pass
     elif not isinstance(value, field.type):
         raise TypeError(f"{name} is not a {field.type}: {value!r}")
 

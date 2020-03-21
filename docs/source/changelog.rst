@@ -3,9 +3,14 @@
 Release History
 ---------------
 
+Changes in 2.0.1
+~~~~~~~~~~~~~~~~
+
+- don't try to cast annotations containing ``typing.Generic`` or
+  ``typing.Any``.
 
 Changes in 2.0.0
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 - support explicit declaration of getters and setters that are not
   visible properties.
