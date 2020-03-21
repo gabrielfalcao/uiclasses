@@ -44,11 +44,202 @@ properties are relevant for user-interface purposes.
        followers: int
        following: int
 
+Every field declared with `type annotations
+<https://docs.python.org/3/library/typing.html>`_ is considered to be
+visible in the user interface.
+
+This is this is powered by :py:func:`dataclasses.fields`.
 
 
-.. note:: Every :py:class:`~uiclasses.base.Model` is a
-             :py:func:`~uiclasses.base.basic_dataclass` and assumes
-             that all fields with `type annotations
-             <https://docs.python.org/3/library/typing.html>`_ are
-             visible, this is powered by
-             :py:func:`dataclasses.fields`.
+Two ways of instantiating models
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+1. Passing a :py:class:`dict`
++++++++++++++++++++++++++++++
+
+.. testcode::
+
+   octocat = GithubUser({
+       "login": "octocat",
+   })
+
+   print(octocat.to_dict())
+
+.. testoutput::
+
+   {
+       "login": "octocat",
+   }
+
+
+1. Passing a keyword-arguments
+++++++++++++++++++++++++++++++
+
+.. testcode::
+
+   octocat = GithubUser(
+       login="octocat",
+   )
+   print(octocat.to_dict())
+
+.. testoutput::
+
+   {
+       "login": "octocat",
+   }
+
+Automatic getters and setters
+-----------------------------
+
+Every visible field becomes a property that can be accessed directly
+via instance as if it were a regular ``@property``
+
+
+.. testcode::
+
+   user1 = GithubUser()
+   user1.login = "octocat"
+
+   print(user1.to_dict())
+
+
+.. testoutput::
+
+   {
+       "login": "octocat",
+   }
+
+
+Invisible Getters/Setters
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes it can be useful to define properties that act on the
+internal data of a model without making them visible to the user
+interface.
+
+UIClasses provides special annotations to achieve this with 3 variations:
+
+- Read-only Getters
+- Write-only Setters
+- Read-Write Properties
+
+
+Read-only Getters
++++++++++++++++++
+
+.. testcode::
+
+   from uiclasses import Model
+
+
+   class User(Model):
+       id: int
+       username: str
+       token: Getter[str]
+
+
+   foobar = User(id=1, username="foobar", token="some-data")
+   print(foobar.to_dict())
+   print(foobar.token)
+   print(foobar.get_table_columns())
+
+   try:
+       foobar.token = 'another-value'
+   except Exception as e:
+       print(e)
+
+
+.. testoutput::
+
+   {
+       "id": 1,
+       "username": "foobar",
+       "token": "some-data",
+   }
+   "some-data"
+   ["id", "username"]
+   "'User' object has no attribute 'token'"
+
+
+Write-only Getters
+++++++++++++++++++
+
+.. testcode::
+
+   from uiclasses import Model
+
+
+   class User(Model):
+       id: int
+       username: str
+       token: Setter[str]
+
+
+   foobar = User(id=1, username="foobar", token="some-data")
+   print(foobar.to_dict())
+   foobar.token = 'another-value'
+   print(foobar.to_dict())
+   print(foobar.get_table_columns())
+
+   try:
+       print(foobar.token)
+   except Exception as e:
+       print(e)
+
+.. testoutput::
+
+   {
+       "id": 1,
+       "username": "foobar",
+       "token": "some-data",
+   }
+   {
+       "id": 1,
+       "username": "foobar",
+       "token": "another-value",
+   }
+   ["id", "username"]
+   "'User' object has no attribute 'token'"
+
+
+
+Read-write Properties
++++++++++++++++++++++
+
+
+.. testcode::
+
+   from uiclasses import Model
+
+
+   class User(Model):
+       id: int
+       username: str
+       token: Property[str]
+
+
+   foobar = User(id=1, username="foobar", token="some-data")
+   print(foobar.token)
+   print(foobar.to_dict())
+   foobar.token = 'another-value'
+   print(foobar.token)
+   print(foobar.to_dict())
+   print(foobar.get_table_columns())
+
+
+.. testoutput::
+
+   "some-data"
+   {
+       "id": 1,
+       "username": "foobar",
+       "token": "some-data",
+   }
+   "another-value"
+   {
+       "id": 1,
+       "username": "foobar",
+       "token": "another-value",
+   }
+   ["id", "username"]
