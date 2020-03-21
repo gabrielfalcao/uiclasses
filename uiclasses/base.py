@@ -22,10 +22,12 @@
 
 import json
 import hashlib
+import typing
 import dataclasses
 from typing import NewType
 
 from dataclasses import Field
+from ordered_set import OrderedSet
 
 from typing import List, Any, Tuple
 from fnmatch import fnmatch
@@ -36,6 +38,7 @@ from humanfriendly.tables import format_robust_table
 from . import errors
 from .meta import is_builtin_class_except
 from .utils import (
+
     basic_dataclass,
     repr_attributes,
     traverse_dict_children,
@@ -45,7 +48,13 @@ from .utils import (
     extract_attribute_from_class_definition,
     list_field_names_from_dataclass,
     list_visible_field_names_from_dataclass,
+    list_getters_from_metaclass,
+    list_setters_from_metaclass,
+    get_getter_by_name,
+    get_setter_by_name,
 )
+from . import typing as internal_typing
+from .typing import PropertyMetadata, parse_bool
 
 COLLECTION_TYPES = {}
 
@@ -140,11 +149,7 @@ class DataBag(UserFriendlyObject):
         """same as .get() but parses the string value into boolean: `yes` or
         `true`"""
         value = self.get(*args, **kw)
-        if not isinstance(value, str):
-            return bool(value)
-
-        value = value.lower().strip()
-        return value in ("yes", "true", "1", "t")
+        return parse_bool(value)
 
 
 class DataBagChild(DataBag):
@@ -182,7 +187,16 @@ class MetaModel(type):
 
         basic_dataclass(cls)  # required by dataclasses.fields(cls)
 
+        known_getters = list_getters_from_metaclass(cls)
+        attrs["__known_getters__"] = known_getters
+        cls.__known_getters__ = known_getters
+
+        known_setters = list_setters_from_metaclass(cls)
+        attrs["__known_setters__"] = known_setters
+        cls.__known_setters__ = known_setters
+
         visible = []
+
         from_annotations = list_visible_field_names_from_dataclass(cls)
         from_dunder_declaration = filter(
             lambda name: name not in from_annotations,
@@ -193,6 +207,7 @@ class MetaModel(type):
         visible.extend(from_annotations)
         visible.extend(from_dunder_declaration)
 
+        visible = list(OrderedSet(visible) - OrderedSet(known_setters))
         attrs["__visible_attributes__"] = visible
         cls.__visible_attributes__ = visible
 
@@ -206,20 +221,16 @@ class MetaModel(type):
         attrs["__id_attributes__"] = ids
         cls.__id_attributes__ = ids
 
-        cls.Type = NewType(name, cls)
-
         SetName = f"{name}.Set"
         cls.Set = attrs["Set"] = type(
             SetName, (COLLECTION_TYPES[set],), {"__of_model__": cls}
         )
-        cls.Set.Type = NewType(SetName, cls.Set)
+        cls.Set.Type = internal_typing.ModelSet[cls]
         ListName = f"{name}.List"
         cls.List = attrs["List"] = type(
             ListName, (COLLECTION_TYPES[list],), {"__of_model__": cls}
         )
-        cls.List.Type = NewType(ListName, cls.List)
-
-        super().__init__(name, bases, attrs)
+        cls.List.Type = internal_typing.ModelList[cls]
 
 
 class Model(DataBag, metaclass=MetaModel):
@@ -267,17 +278,70 @@ class Model(DataBag, metaclass=MetaModel):
             )
 
         known_fields = dict([(f.name, f) for f in dataclasses.fields(self.__class__)])
+        for name in list(__data__.keys()):
+            field = known_fields.get(name)
+            value = kw.get(name)
+            if value is None:
+                continue
+
+            if field and field.type:
+                if isinstance(field.type, PropertyMetadata):
+                    value = field.type.cast(value)
+
+                elif isinstance(field.type, (typing._SpecialForm, typing._GenericAlias)):
+                    # can't cast into any
+                    pass
+                elif not isinstance(value, field.type):
+                    raise TypeError(f"{name} is not a {field.type}: {value!r}")
+
+
         for name in list(kw.keys()):
             field = known_fields.get(name)
             value = kw.get(name)
-            if field:
-                if field.type and not isinstance(value, field.type):
+            if field and field.type:
+                if isinstance(field.type, PropertyMetadata):
+                    value = field.type.cast(value)
+
+                elif isinstance(field.type, (typing._SpecialForm, typing._GenericAlias)):
+                    # can't cast into any
+                    pass
+                elif not isinstance(value, field.type):
                     raise TypeError(f"{name} is not a {field.type}: {value!r}")
 
             __data__[name] = value
 
         self.__data__ = __data__
         self.initialize(*args, **kw)
+
+    def __getattr__(self, attr):
+        if attr.startswith('__'):
+            return super().__getattribute__(attr)
+        try:
+            return super().__getattribute__(attr)
+        except AttributeError:
+            meta_getter = get_getter_by_name(self.__class__, attr)
+
+            if attr not in allowed_getters(self.__class__):
+                raise
+
+            meta_getter = get_getter_by_name(self.__class__, attr)
+            value = self.__data__.get(attr)
+            if meta_getter:
+                value = meta_getter.cast(value)
+
+            return value
+
+    def __setattr__(self, attr, value):
+        if attr in allowed_setters(self.__class__):
+            meta_setter = get_setter_by_name(self.__class__, attr)
+            if meta_setter:
+                value = meta_setter.cast(value)
+
+            self.__data__[attr] = value
+        elif attr.startswith('__') or hasattr(self, attr):
+            super().__setattr__(attr, value)
+        else:
+            raise AttributeError(f"{self.__class__.__name__!r} object has no attribute {attr!r}")
 
     def initialize(self, *args, **kw):
         """this method is a no-op, use it to take action after the model has
@@ -322,7 +386,7 @@ class Model(DataBag, metaclass=MetaModel):
         return dict(
             [
                 (name, getattr(self, name, self.get(name)))
-                for name in list_field_names_from_dataclass(self.__class__)
+                for name in list_visible_field_names_from_dataclass(self.__class__)
             ]
         )
 
@@ -356,3 +420,11 @@ class Model(DataBag, metaclass=MetaModel):
     def format_pretty_table(self):
         columns, rows = self.get_table_columns_and_rows()
         return format_pretty_table(rows, columns)
+
+
+def allowed_getters(cls: Model):
+    return set(cls.__known_getters__).union(set(cls.__visible_attributes__))
+
+
+def allowed_setters(cls: Model):
+    return set(cls.__known_setters__).union(set(cls.__visible_attributes__))

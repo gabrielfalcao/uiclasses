@@ -21,9 +21,11 @@
 # SOFTWARE.
 
 import json
-from typing import Any, Type, Callable
+from typing import Any, Type, Callable, List, Union
+from ordered_set import OrderedSet
 from functools import reduce
 from dataclasses import dataclass, fields
+from uiclasses.typing import PropertyMetadata
 
 
 def basic_dataclass(cls):
@@ -41,7 +43,7 @@ def try_convert(value: Any, convert: Callable) -> Any:
 
     try:
         return convert(value)
-    except (ValueError, json.JSONDecodeError):
+    except (ValueError, json.JSONDecodeError, TypeError):
         return value
 
 
@@ -99,14 +101,42 @@ def extract_attribute_from_class_definition(
 def list_visible_field_names_from_dataclass(cls: Type):
     """lists all fields from a dataclass that does not have repr=False"""
     names = getattr(cls, "__visible_attributes__", [])
-    extra = [f.name for f in fields(cls) if f.name not in names and f.repr]
+    extra = [f.name for f in fields(cls) if f.name not in names and f.repr and not isinstance(f.type, PropertyMetadata)]
     names.extend(extra)
-    return names
+    return list(
+        OrderedSet(names)
+        - OrderedSet([f.name for f in extract_props_from_class(cls)])
+    )
 
 
 def list_field_names_from_dataclass(cls: Type):
     """lists all fields from a dataclass without filter"""
-    names = getattr(cls, "__visible_attributes__", [])
-    extra = [f.name for f in fields(cls) if f.name not in names]
-    names.extend(extra)
-    return names
+    return [f.name for f in fields(cls)]
+
+
+def extract_props_from_class(cls: Type) -> List[str]:
+    return filter(lambda f: isinstance(f.type, PropertyMetadata), fields(cls))
+
+
+def list_getters_from_metaclass(cls: Type) -> List[str]:
+    return [f.name for f in extract_props_from_class(cls) if f.type.getter]
+
+
+def list_setters_from_metaclass(cls: Type) -> List[str]:
+    return [f.name for f in extract_props_from_class(cls) if f.type.setter]
+
+
+def get_getter_by_name(cls: Type, name: str) -> Union[PropertyMetadata, None]:
+    for potential_meta in extract_props_from_class(cls):
+        if not potential_meta.type.getter:
+            continue
+        if potential_meta.name == name:
+            return potential_meta.type
+
+
+def get_setter_by_name(cls: Type, name: str) -> Union[PropertyMetadata, None]:
+    for potential_meta in extract_props_from_class(cls):
+        if not potential_meta.type.setter:
+            continue
+        if potential_meta.name == name:
+            return potential_meta.type

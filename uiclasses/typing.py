@@ -19,14 +19,80 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-from typing import NewType
-from uiclasses import base
-from uiclasses import collections
+import typing
+from typing import Union, Any, Type, List, Set
 
 
-Model = NewType("Model", base.Model)
-ModelSet = NewType("ModelSet", collections.ModelSet)
-ModelList = NewType("ModelList", collections.ModelList)
+def parse_bool(value):
+    if not isinstance(value, str):
+        return bool(value)
 
-IterableCollection = NewType("IterableCollection", collections.IterableCollection)
+    value = value.lower().strip()
+    return value in ("yes", "true", "1", "t")
+
+
+class MetaModelList(type):
+    def __getitem__(cls, key):
+        return getattr(key, 'List', List)
+
+
+class MetaModelSet(type):
+    def __getitem__(cls, key):
+        return getattr(key, 'Set', Set)
+
+
+class MetaIterableCollection(type):
+    def __getitem__(cls, key):
+        return Union[ModelList[key], ModelSet[key]]
+
+
+class PropertyMetadata(object):
+    def __init__(self, Type: Type, getter=False, setter=False):
+        self.Type = Type
+        self.getter = getter
+        self.setter = setter
+
+    def cast(self, value):
+        if self.Type == bool:
+            return parse_bool(value)
+
+        return typing.cast(self.Type, value)
+
+
+class MetaGetter(type):
+    def __getitem__(cls, key: Any):
+        return PropertyMetadata(key, getter=True)
+
+
+class MetaSetter(type):
+    def __getitem__(cls, key: Any):
+        return PropertyMetadata(key, setter=True)
+
+
+class MetaProperty(type):
+    def __getitem__(cls, key: Any):
+        return PropertyMetadata(key, setter=True, getter=True)
+
+
+class Getter(metaclass=MetaGetter):
+    pass
+
+
+class Setter(metaclass=MetaSetter):
+    pass
+
+
+class Property(metaclass=MetaProperty):
+    pass
+
+
+class ModelList(metaclass=MetaModelList):
+    pass
+
+
+class ModelSet(metaclass=MetaModelSet):
+    pass
+
+
+class IterableCollection(metaclass=MetaIterableCollection):
+    pass

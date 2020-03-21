@@ -28,6 +28,7 @@ from typing import Iterable
 from typing import Callable
 from ordered_set import OrderedSet
 from humanfriendly.tables import format_robust_table, format_pretty_table
+from . import typing as internal_typing
 
 ITERABLES = (list, tuple, itertools.chain, set, map, filter, GeneratorType)
 
@@ -90,7 +91,7 @@ class IterableCollection(UserFriendlyObject):
             **kw,
         )
 
-    def filter_by(self, attribute_name: str, fnmatch_pattern: str) -> Iterable[Model]:
+    def filter_by(self, attribute_name: str, fnmatch_pattern: str) -> internal_typing.IterableCollection[Model]:
         """filter by a single attribute of the model children.
 
         Example:

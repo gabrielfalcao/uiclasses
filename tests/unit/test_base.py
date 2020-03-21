@@ -49,8 +49,41 @@ def test_construct_with_dict_like_object():
     )
 
 
-def test_construct_with_kwargs():
+def test_getters():
+    chuck = User(id=1, username="chucknorris", github_token="roundhousekick")
+    chuck.id.should.equal(1)
+    chuck.username.should.equal('chucknorris')
 
+    getattr.when.called_with(chuck, 'github_token').should.have.raised(
+        AttributeError, "'User' object has no attribute 'github_token'"
+    )
+
+
+def test_setters():
+    chuck = User(username="johndoe", github_token="foobar")
+
+    chuck.username.should.equal('johndoe')
+    chuck.to_dict().should.equal({
+        "username": "johndoe",
+        "github_token": "foobar",
+    })
+
+    chuck.username = 'chucknorris'
+    setattr.when.called_with(chuck, 'github_token', 'roundhousekick').should.have.raised(
+        AttributeError, "'User' object has no attribute 'github_token'"
+    )
+
+    chuck.username.should.equal('chucknorris')
+    chuck.to_dict().should.equal({
+        "username": "chucknorris",
+        "github_token": "foobar",
+    })
+    getattr.when.called_with(chuck, 'github_token').should.have.raised(
+        AttributeError, "'User' object has no attribute 'github_token'"
+    )
+
+
+def test_construct_with_kwargs():
     chuck = User(id=1, username="chucknorris", email="root@chucknorris.com")
     chuck.to_dict().should.equal(
         {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
@@ -58,7 +91,6 @@ def test_construct_with_kwargs():
 
 
 def test_getbool():
-
     User(dict(verified="yes")).getbool("verified").should.equal(True)
     User(dict(verified="t")).getbool("verified").should.equal(True)
     User(dict(verified="true")).getbool("verified").should.equal(True)
@@ -100,9 +132,9 @@ def test_hashing():
     )
     chuck3 = User({"id": 2, "username": "chucknorris", "email": "root@chucknorris.com"})
 
-    hash(chuck1).should.equal(1055335369465515066)
-    hash(chuck2).should.equal(1055335369465515066)
-    hash(chuck3).should.equal(232646522563736296)
+    hash(chuck1).should.equal(1321482623931622270)
+    hash(chuck2).should.equal(1321482623931622270)
+    hash(chuck3).should.equal(614150061375549557)
 
 
 def test_equals():
