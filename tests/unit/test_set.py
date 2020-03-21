@@ -10,7 +10,9 @@ class Essay(Model):
 
 
 def test_from_generator():
-    generator = (Essay(id=str(x), title=f'title {x}', body=f'body {x}') for x in range(100))
+    generator = (
+        Essay(id=str(x), title=f"title {x}", body=f"body {x}") for x in range(100)
+    )
     result = Essay.Set(generator)
     result.should.be.a(ModelSet)
     result.should.have.length_of(100)

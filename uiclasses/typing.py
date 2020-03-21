@@ -33,12 +33,12 @@ def parse_bool(value):
 
 class MetaModelList(type):
     def __getitem__(cls, key):
-        return getattr(key, 'List', List)
+        return getattr(key, "List", List)
 
 
 class MetaModelSet(type):
     def __getitem__(cls, key):
-        return getattr(key, 'Set', Set)
+        return getattr(key, "Set", Set)
 
 
 class MetaIterableCollection(type):

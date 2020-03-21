@@ -22,60 +22,64 @@ def test_getters():
     chuck = Account(
         id=1,
         username="chucknorris",
-        email='chuck@norris.com',
+        email="chuck@norris.com",
         github_token="roundhousekick",
-        slack_username='@chuck',
-        jira_token='basecampforever<3',
+        slack_username="@chuck",
+        jira_token="basecampforever<3",
         verified=True,
     )
 
-    chuck.get_table_columns().should.equal(['id', 'username', 'email', 'ref'])
-    chuck.get_table_rows().should.equal(
-        [
-            [1, 'chucknorris', 'chuck@norris.com', None]
-        ]
-    )
+    chuck.get_table_columns().should.equal(["id", "username", "email", "ref"])
+    chuck.get_table_rows().should.equal([[1, "chucknorris", "chuck@norris.com", None]])
 
 
 def test_setters():
-    chuck = Account(dict(
-        username="johndoe",
-        github_token="foobar",
-        jira_token='trello',
-    ))
+    chuck = Account(
+        dict(username="johndoe", github_token="foobar", jira_token="trello")
+    )
 
-    chuck.username.should.equal('johndoe')
-    chuck.to_dict().should.equal({
-        "username": "johndoe",
-        "github_token": "foobar",
-        "jira_token": "trello"
-    })
+    chuck.username.should.equal("johndoe")
+    chuck.to_dict().should.equal(
+        {"username": "johndoe", "github_token": "foobar", "jira_token": "trello"}
+    )
 
-    chuck.username = 'chucknorris'
-    chuck.jira_token = 'basecampforever<3'
-    chuck.verified = 'yes'
-    setattr.when.called_with(chuck, 'github_token', 'roundhousekick').should.have.raised(
+    chuck.username = "chucknorris"
+    chuck.jira_token = "basecampforever<3"
+    chuck.verified = "yes"
+    setattr.when.called_with(
+        chuck, "github_token", "roundhousekick"
+    ).should.have.raised(
         AttributeError, "'Account' object has no attribute 'github_token'"
     )
 
-    chuck.username.should.equal('chucknorris')
-    chuck.to_dict().should.equal({
-        "username": "chucknorris",
-        "github_token": "foobar",
-        "jira_token": "basecampforever<3",
-        "verified": True
-    })
-    getattr.when.called_with(chuck, 'github_token').should.have.raised(
+    chuck.username.should.equal("chucknorris")
+    chuck.to_dict().should.equal(
+        {
+            "username": "chucknorris",
+            "github_token": "foobar",
+            "jira_token": "basecampforever<3",
+            "verified": True,
+        }
+    )
+    getattr.when.called_with(chuck, "github_token").should.have.raised(
         AttributeError, "'Account' object has no attribute 'github_token'"
     )
-    getattr.when.called_with(chuck, 'jira_token').should.have.raised(
+    getattr.when.called_with(chuck, "jira_token").should.have.raised(
         AttributeError, "'Account' object has no attribute 'jira_token'"
     )
 
 
 def test_construct_with_dict_like_object():
     # Given an object that is not a dict but behaves like one
-    almost = AlmostDict(dict(id=1, username="chucknorris", email="root@chucknorris.com", verified=None, jira_token=None))
+    almost = AlmostDict(
+        dict(
+            id=1,
+            username="chucknorris",
+            email="root@chucknorris.com",
+            verified=None,
+            jira_token=None,
+        )
+    )
 
     # When I instantiate a model with it
     chuck = Account(almost)
@@ -90,16 +94,24 @@ def test_construct_with_dict_like_object():
             "verified": None,
         }
     )
-    chuck.__ui_attributes__().should.equal({
-        'email': 'root@chucknorris.com',
-        'id': 1,
-        'username': 'chucknorris',
-        'ref': None,
-    })
+    chuck.__ui_attributes__().should.equal(
+        {
+            "email": "root@chucknorris.com",
+            "id": 1,
+            "username": "chucknorris",
+            "ref": None,
+        }
+    )
 
 
 def test_construct_with_kwargs():
-    chuck = Account(id=1, username="chucknorris", email="root@chucknorris.com", verified=None, jira_token=None)
+    chuck = Account(
+        id=1,
+        username="chucknorris",
+        email="root@chucknorris.com",
+        verified=None,
+        jira_token=None,
+    )
     chuck.to_dict().should.equal(
         {
             "id": 1,
@@ -109,12 +121,14 @@ def test_construct_with_kwargs():
             "jira_token": None,
         }
     )
-    chuck.__ui_attributes__().should.equal({
-        'email': 'root@chucknorris.com',
-        'id': 1,
-        'username': 'chucknorris',
-        'ref': None,
-    })
+    chuck.__ui_attributes__().should.equal(
+        {
+            "email": "root@chucknorris.com",
+            "id": 1,
+            "username": "chucknorris",
+            "ref": None,
+        }
+    )
 
 
 def test_getbool():
@@ -137,7 +151,9 @@ def test_getbool():
 
 
 def test_construct_with_dict():
-    chuck = Account({"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"})
+    chuck = Account(
+        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
     chuck.to_dict().should.equal(
         {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
     )
@@ -157,7 +173,9 @@ def test_hashing():
     chuck2 = Account(
         **{"id": 10000, "username": "chucknorris", "email": "root@chucknorris.com"}
     )
-    chuck3 = Account(**{"id": 2, "username": "chucknorris", "email": "root@chucknorris.com"})
+    chuck3 = Account(
+        **{"id": 2, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
 
     hash(chuck1).should.equal(257603812906578437)
     hash(chuck2).should.equal(257603812906578437)
@@ -165,8 +183,12 @@ def test_hashing():
 
 
 def test_equals():
-    chuck1 = Account({"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"})
-    chuck2 = Account({"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"})
+    chuck1 = Account(
+        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
+    chuck2 = Account(
+        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
 
     chuck1.should.equal(chuck2)
 

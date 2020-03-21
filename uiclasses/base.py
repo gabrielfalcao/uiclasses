@@ -38,7 +38,6 @@ from humanfriendly.tables import format_robust_table
 from . import errors
 from .meta import is_builtin_class_except
 from .utils import (
-
     basic_dataclass,
     repr_attributes,
     traverse_dict_children,
@@ -322,10 +321,12 @@ class Model(DataBag, metaclass=MetaModel):
                 value = meta_setter.cast(value)
 
             self.__data__[attr] = value
-        elif attr.startswith('__') or hasattr(self, attr):
+        elif attr.startswith("__") or hasattr(self, attr):
             super().__setattr__(attr, value)
         else:
-            raise AttributeError(f"{self.__class__.__name__!r} object has no attribute {attr!r}")
+            raise AttributeError(
+                f"{self.__class__.__name__!r} object has no attribute {attr!r}"
+            )
 
     def initialize(self, *args, **kw):
         """this method is a no-op, use it to take action after the model has

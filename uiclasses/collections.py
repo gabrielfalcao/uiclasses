@@ -91,7 +91,9 @@ class IterableCollection(UserFriendlyObject):
             **kw,
         )
 
-    def filter_by(self, attribute_name: str, fnmatch_pattern: str) -> internal_typing.IterableCollection[Model]:
+    def filter_by(
+        self, attribute_name: str, fnmatch_pattern: str
+    ) -> internal_typing.IterableCollection[Model]:
         """filter by a single attribute of the model children.
 
         Example:

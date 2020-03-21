@@ -14,7 +14,9 @@ class User(Model):
 
 def test_construct_with_dict_like_object():
     # Given an object that is not a dict but behaves like one
-    almost = AlmostDict(dict(id=1, username="chucknorris", email="root@chucknorris.com"))
+    almost = AlmostDict(
+        dict(id=1, username="chucknorris", email="root@chucknorris.com")
+    )
 
     # When I instantiate a model with it
     chuck = User(almost)
@@ -28,9 +30,9 @@ def test_construct_with_dict_like_object():
 def test_getters():
     chuck = User(id=1, username="chucknorris", github_token="roundhousekick")
     chuck.id.should.equal(1)
-    chuck.username.should.equal('chucknorris')
+    chuck.username.should.equal("chucknorris")
 
-    getattr.when.called_with(chuck, 'github_token').should.have.raised(
+    getattr.when.called_with(chuck, "github_token").should.have.raised(
         AttributeError, "'User' object has no attribute 'github_token'"
     )
 
@@ -38,23 +40,19 @@ def test_getters():
 def test_setters():
     chuck = User(username="johndoe", github_token="foobar")
 
-    chuck.username.should.equal('johndoe')
-    chuck.to_dict().should.equal({
-        "username": "johndoe",
-        "github_token": "foobar",
-    })
+    chuck.username.should.equal("johndoe")
+    chuck.to_dict().should.equal({"username": "johndoe", "github_token": "foobar"})
 
-    chuck.username = 'chucknorris'
-    setattr.when.called_with(chuck, 'github_token', 'roundhousekick').should.have.raised(
+    chuck.username = "chucknorris"
+    setattr.when.called_with(
+        chuck, "github_token", "roundhousekick"
+    ).should.have.raised(
         AttributeError, "'User' object has no attribute 'github_token'"
     )
 
-    chuck.username.should.equal('chucknorris')
-    chuck.to_dict().should.equal({
-        "username": "chucknorris",
-        "github_token": "foobar",
-    })
-    getattr.when.called_with(chuck, 'github_token').should.have.raised(
+    chuck.username.should.equal("chucknorris")
+    chuck.to_dict().should.equal({"username": "chucknorris", "github_token": "foobar"})
+    getattr.when.called_with(chuck, "github_token").should.have.raised(
         AttributeError, "'User' object has no attribute 'github_token'"
     )
 
