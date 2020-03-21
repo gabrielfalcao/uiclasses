@@ -326,12 +326,8 @@ class Model(DataBag, metaclass=MetaModel):
                 value = meta_setter.cast(value)
 
             self.__data__[attr] = value
-        elif attr.startswith("__") or hasattr(self, attr):
-            super().__setattr__(attr, value)
-        else:
-            raise AttributeError(
-                f"{self.__class__.__name__!r} object has no attribute {attr!r}"
-            )
+
+        super().__setattr__(attr, value)
 
     def initialize(self, *args, **kw):
         """this method is a no-op, use it to take action after the model has

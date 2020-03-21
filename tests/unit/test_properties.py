@@ -46,11 +46,7 @@ def test_setters():
     chuck.username = "chucknorris"
     chuck.jira_token = "basecampforever<3"
     chuck.verified = "yes"
-    setattr.when.called_with(
-        chuck, "github_token", "roundhousekick"
-    ).should.have.raised(
-        AttributeError, "'Account' object has no attribute 'github_token'"
-    )
+    chuck.github_token = "roundhousekick"
 
     chuck.username.should.equal("chucknorris")
     chuck.to_dict().should.equal(
@@ -61,12 +57,8 @@ def test_setters():
             "verified": True,
         }
     )
-    getattr.when.called_with(chuck, "github_token").should.have.raised(
-        AttributeError, "'Account' object has no attribute 'github_token'"
-    )
-    getattr.when.called_with(chuck, "jira_token").should.have.raised(
-        AttributeError, "'Account' object has no attribute 'jira_token'"
-    )
+    chuck.should.have.property("github_token").should.equal("roundhousekick")
+    chuck.should.have.property("jira_token").should.equal("basecampforever<3")
 
 
 def test_construct_with_dict_like_object():

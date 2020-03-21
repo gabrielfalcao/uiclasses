@@ -3,6 +3,12 @@
 Release History
 ---------------
 
+Changes in 2.0.3
+~~~~~~~~~~~~~~~~
+
+- perform ``super()__setattr__`` behavior even when an explicit setter
+  is not defined and the attribute does not exist in the instance.
+
 Changes in 2.0.2
 ~~~~~~~~~~~~~~~~
 

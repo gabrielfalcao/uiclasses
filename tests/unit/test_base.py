@@ -60,17 +60,11 @@ def test_setters():
     chuck.to_dict().should.equal({"username": "johndoe", "github_token": "foobar"})
 
     chuck.username = "chucknorris"
-    setattr.when.called_with(
-        chuck, "github_token", "roundhousekick"
-    ).should.have.raised(
-        AttributeError, "'User' object has no attribute 'github_token'"
-    )
+    chuck.github_token = "roundhousekick"
 
     chuck.username.should.equal("chucknorris")
     chuck.to_dict().should.equal({"username": "chucknorris", "github_token": "foobar"})
-    getattr.when.called_with(chuck, "github_token").should.have.raised(
-        AttributeError, "'User' object has no attribute 'github_token'"
-    )
+    chuck.should.have.property("github_token").being.equal("roundhousekick")
 
 
 def test_construct_with_kwargs():
