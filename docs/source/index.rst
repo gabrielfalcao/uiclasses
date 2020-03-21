@@ -8,7 +8,7 @@ UIClasses - Data-Modeling for User Interfaces
 
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
    :caption: Contents:
 
    tutorial
