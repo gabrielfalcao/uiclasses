@@ -279,34 +279,20 @@ class Model(DataBag, metaclass=MetaModel):
 
         known_fields = dict([(f.name, f) for f in dataclasses.fields(self.__class__)])
         for name in list(__data__.keys()):
-            field = known_fields.get(name)
-            value = kw.get(name)
+            value = __data__.get(name)
             if value is None:
                 continue
 
+            field = known_fields.get(name)
             if field and field.type:
-                if isinstance(field.type, PropertyMetadata):
-                    value = field.type.cast(value)
-
-                elif isinstance(field.type, (typing._SpecialForm, typing._GenericAlias)):
-                    # can't cast into any
-                    pass
-                elif not isinstance(value, field.type):
-                    raise TypeError(f"{name} is not a {field.type}: {value!r}")
-
+                cast_field(field, value)
 
         for name in list(kw.keys()):
-            field = known_fields.get(name)
             value = kw.get(name)
-            if field and field.type:
-                if isinstance(field.type, PropertyMetadata):
-                    value = field.type.cast(value)
 
-                elif isinstance(field.type, (typing._SpecialForm, typing._GenericAlias)):
-                    # can't cast into any
-                    pass
-                elif not isinstance(value, field.type):
-                    raise TypeError(f"{name} is not a {field.type}: {value!r}")
+            field = known_fields.get(name)
+            if field and field.type:
+                cast_field(field, value)
 
             __data__[name] = value
 
@@ -314,8 +300,6 @@ class Model(DataBag, metaclass=MetaModel):
         self.initialize(*args, **kw)
 
     def __getattr__(self, attr):
-        if attr.startswith('__'):
-            return super().__getattribute__(attr)
         try:
             return super().__getattribute__(attr)
         except AttributeError:
@@ -428,3 +412,19 @@ def allowed_getters(cls: Model):
 
 def allowed_setters(cls: Model):
     return set(cls.__known_setters__).union(set(cls.__visible_attributes__))
+
+
+def cast_field(field, value):
+    name = field.name
+    if field.type == bool:
+        value = parse_bool(value)
+    if isinstance(field.type, PropertyMetadata):
+        value = field.type.cast(value)
+
+    # elif isinstance(field.type, (typing._SpecialForm, typing._GenericAlias)):
+    #     # can't cast from typing.Any or typing.Generic
+    #     pass
+    elif not isinstance(value, field.type):
+        raise TypeError(f"{name} is not a {field.type}: {value!r}")
+
+    return value

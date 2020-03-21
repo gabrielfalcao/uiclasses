@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+from typing import Any
 from uiclasses import Model
 from uiclasses.typing import Getter
 from uiclasses.typing import Setter
 from uiclasses.typing import Property
+
+from .helpers import AlmostDict
 
 
 class Account(Model):
@@ -12,6 +15,7 @@ class Account(Model):
     slack_username: Getter[str]
     jira_token: Setter[str]
     verified: Property[bool]
+    ref: Any
 
 
 def test_getters():
@@ -25,21 +29,26 @@ def test_getters():
         verified=True,
     )
 
-    chuck.get_table_columns().should.equal(['id', 'username', 'email'])
+    chuck.get_table_columns().should.equal(['id', 'username', 'email', 'ref'])
     chuck.get_table_rows().should.equal(
         [
-            [1, 'chucknorris', 'chuck@norris.com']
+            [1, 'chucknorris', 'chuck@norris.com', None]
         ]
     )
 
 
 def test_setters():
-    chuck = Account(username="johndoe", github_token="foobar")
+    chuck = Account(dict(
+        username="johndoe",
+        github_token="foobar",
+        jira_token='trello',
+    ))
 
     chuck.username.should.equal('johndoe')
     chuck.to_dict().should.equal({
         "username": "johndoe",
         "github_token": "foobar",
+        "jira_token": "trello"
     })
 
     chuck.username = 'chucknorris'
@@ -64,11 +73,48 @@ def test_setters():
     )
 
 
-def test_construct_with_kwargs():
-    chuck = Account(id=1, username="chucknorris", email="root@chucknorris.com")
+def test_construct_with_dict_like_object():
+    # Given an object that is not a dict but behaves like one
+    almost = AlmostDict(dict(id=1, username="chucknorris", email="root@chucknorris.com", verified=None, jira_token=None))
+
+    # When I instantiate a model with it
+    chuck = Account(almost)
+
+    # Then it should work
     chuck.to_dict().should.equal(
-        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+        {
+            "id": 1,
+            "username": "chucknorris",
+            "email": "root@chucknorris.com",
+            "jira_token": None,
+            "verified": None,
+        }
     )
+    chuck.__ui_attributes__().should.equal({
+        'email': 'root@chucknorris.com',
+        'id': 1,
+        'username': 'chucknorris',
+        'ref': None,
+    })
+
+
+def test_construct_with_kwargs():
+    chuck = Account(id=1, username="chucknorris", email="root@chucknorris.com", verified=None, jira_token=None)
+    chuck.to_dict().should.equal(
+        {
+            "id": 1,
+            "username": "chucknorris",
+            "email": "root@chucknorris.com",
+            "verified": None,
+            "jira_token": None,
+        }
+    )
+    chuck.__ui_attributes__().should.equal({
+        'email': 'root@chucknorris.com',
+        'id': 1,
+        'username': 'chucknorris',
+        'ref': None,
+    })
 
 
 def test_getbool():
@@ -113,9 +159,9 @@ def test_hashing():
     )
     chuck3 = Account(**{"id": 2, "username": "chucknorris", "email": "root@chucknorris.com"})
 
-    hash(chuck1).should.equal(2003873043500067927)
-    hash(chuck2).should.equal(2003873043500067927)
-    hash(chuck3).should.equal(921033703088125588)
+    hash(chuck1).should.equal(257603812906578437)
+    hash(chuck2).should.equal(257603812906578437)
+    hash(chuck3).should.equal(1454713328780367858)
 
 
 def test_equals():
