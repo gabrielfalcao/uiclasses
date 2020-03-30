@@ -29,5 +29,6 @@ def is_builtin_class_except(target: type, except_names: List[str]) -> bool:
     """
 
     return (
-        target.__module__.startswith("uiclasses.") and target.__name__ in except_names
+        target.__module__.startswith("uiclasses.")
+        and target.__name__ in except_names
     )

@@ -23,7 +23,9 @@ def test_databag_traverse_to_section():
 
     # Then it returns
     str(d).should.equal("DataBag(section={'subsection': {'key': 'value'}})")
-    str(subsection).should.equal("DataBagChild 'section.subsection' of (key='value')")
+    str(subsection).should.equal(
+        "DataBagChild 'section.subsection' of (key='value')"
+    )
 
     # But when accessed with .get() it should be a plain dict
     d.get("section").should.be.a(dict)

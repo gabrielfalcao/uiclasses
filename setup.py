@@ -46,7 +46,9 @@ setup(
     },
     packages=find_packages(exclude=["*tests*"]),
     include_package_data=True,
-    package_data={"uiclasses": ["README.rst", "*.png", "*.rst", "docs/*", "docs/*/*"]},
+    package_data={
+        "uiclasses": ["README.rst", "*.png", "*.rst", "docs/*", "docs/*/*"]
+    },
     package_dir={"uiclasses": "uiclasses"},
     zip_safe=False,
     author="NewStore GmbH",

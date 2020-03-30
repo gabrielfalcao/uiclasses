@@ -57,13 +57,17 @@ def test_setters():
     chuck = User(username="johndoe", github_token="foobar")
 
     chuck.username.should.equal("johndoe")
-    chuck.to_dict().should.equal({"username": "johndoe", "github_token": "foobar"})
+    chuck.to_dict().should.equal(
+        {"username": "johndoe", "github_token": "foobar"}
+    )
 
     chuck.username = "chucknorris"
     chuck.github_token = "roundhousekick"
 
     chuck.username.should.equal("chucknorris")
-    chuck.to_dict().should.equal({"username": "chucknorris", "github_token": "foobar"})
+    chuck.to_dict().should.equal(
+        {"username": "chucknorris", "github_token": "foobar"}
+    )
     chuck.should.have.property("github_token").being.equal("roundhousekick")
 
 
@@ -87,14 +91,18 @@ def test_getbool():
 
     # non-strings
     User(dict(verified=True)).getbool("verified").should.equal(True)
-    User(dict(verified={"some": "dict"})).getbool("verified").should.equal(True)
+    User(dict(verified={"some": "dict"})).getbool("verified").should.equal(
+        True
+    )
 
     User(dict(verified=False)).getbool("verified").should.equal(False)
     User(dict(verified={})).getbool("verified").should.equal(False)
 
 
 def test_construct_with_dict():
-    chuck = User({"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"})
+    chuck = User(
+        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
     chuck.to_dict().should.equal(
         {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
     )
@@ -109,12 +117,22 @@ def test_nonzero():
 
 def test_hashing():
     chuck1 = User(
-        {"id": 10000, "username": "chucknorris", "email": "root@chucknorris.com"}
+        {
+            "id": 10000,
+            "username": "chucknorris",
+            "email": "root@chucknorris.com",
+        }
     )
     chuck2 = User(
-        {"id": 10000, "username": "chucknorris", "email": "root@chucknorris.com"}
+        {
+            "id": 10000,
+            "username": "chucknorris",
+            "email": "root@chucknorris.com",
+        }
     )
-    chuck3 = User({"id": 2, "username": "chucknorris", "email": "root@chucknorris.com"})
+    chuck3 = User(
+        {"id": 2, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
 
     hash(chuck1).should.equal(1321482623931622270)
     hash(chuck2).should.equal(1321482623931622270)
@@ -122,8 +140,12 @@ def test_hashing():
 
 
 def test_equals():
-    chuck1 = User({"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"})
-    chuck2 = User({"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"})
+    chuck1 = User(
+        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
+    chuck2 = User(
+        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
 
     chuck1.should.equal(chuck2)
 
@@ -135,19 +157,25 @@ def test_equals():
 
 
 def test_format_pretty_table():
-    chuck = User({"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"})
+    chuck = User(
+        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
     chuck.format_pretty_table().should.equal(
         format_pretty_table(
-            [[1, "chucknorris", "root@chucknorris.com"]], ["id", "username", "email"]
+            [[1, "chucknorris", "root@chucknorris.com"]],
+            ["id", "username", "email"],
         )
     )
 
 
 def test_format_robust_table():
-    chuck = User({"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"})
+    chuck = User(
+        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
     chuck.format_robust_table().should.equal(
         format_robust_table(
-            [[1, "chucknorris", "root@chucknorris.com"]], ["id", "username", "email"]
+            [[1, "chucknorris", "root@chucknorris.com"]],
+            ["id", "username", "email"],
         )
     )
 
@@ -163,7 +191,9 @@ def test_create_model_with_nondict_data():
 
 
 def test_create_model_with_kwarg_type_mismatching_field_declaration():
-    when_created = User.when.called_with(id=1, username={"a set, not a string"})
+    when_created = User.when.called_with(
+        id=1, username={"a set, not a string"}
+    )
 
     when_created.should.have.raised(
         TypeError, "username is not a <class 'str'>: {'a set, not a string'}"

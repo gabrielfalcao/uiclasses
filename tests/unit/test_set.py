@@ -11,7 +11,8 @@ class Essay(Model):
 
 def test_from_generator():
     generator = (
-        Essay(id=str(x), title=f"title {x}", body=f"body {x}") for x in range(100)
+        Essay(id=str(x), title=f"title {x}", body=f"body {x}")
+        for x in range(100)
     )
     result = Essay.Set(generator)
     result.should.be.a(ModelSet)

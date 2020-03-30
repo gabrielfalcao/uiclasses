@@ -11,7 +11,8 @@ class BlogPost(Model):
 
 def test_from_generator():
     generator = (
-        BlogPost(id=x, title=f"title {x}", body=f"body {x}") for x in range(100)
+        BlogPost(id=x, title=f"title {x}", body=f"body {x}")
+        for x in range(100)
     )
     result = BlogPost.List(generator)
     result.should.be.a(ModelList)
@@ -78,7 +79,9 @@ def test_filter_by_glob():
     posts.should.be.a(ModelList)
     posts.should.have.property("__of_model__").being.equal(BlogPost)
 
-    posts.to_dict().should.equal([{"id": 2, "title": "chuck norris", "body": "body 2"}])
+    posts.to_dict().should.equal(
+        [{"id": 2, "title": "chuck norris", "body": "body 2"}]
+    )
 
 
 def test_filter_by_exact_match():
@@ -93,7 +96,9 @@ def test_filter_by_exact_match():
     posts.should.be.a(BlogPost.List)
     posts.should.have.property("__of_model__").being.equal(BlogPost)
 
-    posts.to_dict().should.equal([{"id": 1, "title": "foo bar", "body": "body 1"}])
+    posts.to_dict().should.equal(
+        [{"id": 1, "title": "foo bar", "body": "body 1"}]
+    )
 
 
 def test_list_with_invalid_model():

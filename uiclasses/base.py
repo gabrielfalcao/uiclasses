@@ -224,7 +224,10 @@ class MetaModel(type):
         )
 
         ids.extend(
-            filter(lambda name: name not in ids, list_field_names_from_dataclass(cls))
+            filter(
+                lambda name: name not in ids,
+                list_field_names_from_dataclass(cls),
+            )
         )
         attrs["__id_attributes__"] = ids
         cls.__id_attributes__ = ids
@@ -285,7 +288,9 @@ class Model(DataBag, metaclass=MetaModel):
                 f"__data__ argument: {__data__!r}"
             )
 
-        known_fields = dict([(f.name, f) for f in dataclasses.fields(self.__class__)])
+        known_fields = dict(
+            [(f.name, f) for f in dataclasses.fields(self.__class__)]
+        )
         for name in list(__data__.keys()):
             value = __data__.get(name)
             if value is None:
@@ -293,14 +298,16 @@ class Model(DataBag, metaclass=MetaModel):
 
             field = known_fields.get(name)
             if field and field.type:
-                cast_field(field, value)
+                value = cast_field(field, value)
+
+            __data__[name] = value
 
         for name in list(kw.keys()):
             value = kw.get(name)
 
             field = known_fields.get(name)
             if field and field.type:
-                cast_field(field, value)
+                value = cast_field(field, value)
 
             __data__[name] = value
 
@@ -345,15 +352,25 @@ class Model(DataBag, metaclass=MetaModel):
         return other.__ui_attributes__() == self.__ui_attributes__()
 
     def __hash__(self):
-        values = dict([(k, try_int(self.get(k))) for k in self.__id_attributes__])
+        values = dict(
+            [(k, try_int(self.get(k))) for k in self.__id_attributes__]
+        )
         string = json.dumps(values)
         return int(hashlib.sha1(bytes(string, "ascii")).hexdigest(), 16)
 
     def serialize(self) -> dict:
         data = self.__data__.copy()
+        IterableCollection = COLLECTION_TYPES[iter]
+        Serializable = (Model, IterableCollection)
         for field in dataclasses.fields(self.__class__):
+            value = data.get(field.name)
             if field.type == bool:
                 data[field.name] = self.getbool(field.name)
+            elif isinstance(field.type, type) and issubclass(
+                field.type, Serializable
+            ):
+                if isinstance(value, Serializable):
+                    data[field.name] = value.to_dict()
 
         return data
 
@@ -364,7 +381,9 @@ class Model(DataBag, metaclass=MetaModel):
     def from_json(cls, json_string: str) -> "Model":
         data = try_json(json_string)
         if not isinstance(data, dict):
-            raise errors.InvalidJSON(f"{json_string!r} cannot be parsed as a dict")
+            raise errors.InvalidJSON(
+                f"{json_string!r} cannot be parsed as a dict"
+            )
 
         return cls(data)
 
@@ -376,11 +395,15 @@ class Model(DataBag, metaclass=MetaModel):
         return dict(
             [
                 (name, getattr(self, name, self.get(name)))
-                for name in list_visible_field_names_from_dataclass(self.__class__)
+                for name in list_visible_field_names_from_dataclass(
+                    self.__class__
+                )
             ]
         )
 
-    def attribute_matches(self, attribute_name: str, fnmatch_pattern: str) -> bool:
+    def attribute_matches(
+        self, attribute_name: str, fnmatch_pattern: str
+    ) -> bool:
 
         """helper method to filter models by an attribute. This allows for
         :py:class:`~uiclasses.ModelList` to
@@ -421,11 +444,22 @@ def allowed_setters(cls: Model):
 
 
 def cast_field(field, value):
+    original = value
     name = field.name
     if field.type == bool:
         value = parse_bool(value)
 
-    if isinstance(field.type, types_without_cast_support):
+    IterableCollection = COLLECTION_TYPES[iter]
+
+    if isinstance(field.type, type) and issubclass(field.type, Model):
+        value = field.type(value)
+
+    elif isinstance(field.type, type) and issubclass(
+        field.type, IterableCollection
+    ):
+        value = field.type(value)
+
+    elif isinstance(field.type, types_without_cast_support):
         pass  # can't cast from typing.Any or typing.Generic
 
     elif isinstance(field.type, PropertyMetadata):
@@ -434,4 +468,4 @@ def cast_field(field, value):
     elif not isinstance(value, field.type):
         raise TypeError(f"{name} is not a {field.type}: {value!r}")
 
-    return value
+    return value or original

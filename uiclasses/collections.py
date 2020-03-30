@@ -87,7 +87,8 @@ class IterableCollection(UserFriendlyObject):
 
         """
         return self.sorted(
-            key=lambda model: getattr(model, attribute, model.get(attribute)) or "",
+            key=lambda model: getattr(model, attribute, model.get(attribute))
+            or "",
             **kw,
         )
 
@@ -105,7 +106,9 @@ class IterableCollection(UserFriendlyObject):
 
         """
         return self.filter(
-            lambda model: model.attribute_matches(attribute_name, fnmatch_pattern)
+            lambda model: model.attribute_matches(
+                attribute_name, fnmatch_pattern
+            )
         )
 
     def filter(self, check: Callable[[Model], bool]) -> Iterable[Model]:
@@ -141,7 +144,8 @@ class IterableCollection(UserFriendlyObject):
         """
         columns = self.get_table_columns(columns)
         return [
-            [model.__ui_attributes__().get(key) for key in columns] for model in self
+            [model.__ui_attributes__().get(key) for key in columns]
+            for model in self
         ]
 
     def get_table_columns_and_rows(self, columns: Iterable[str] = None):
@@ -250,6 +254,7 @@ class ModelSet(OrderedSet, IterableCollection):
         super().__init__(map(model_class, items))
 
 
+COLLECTION_TYPES[iter] = IterableCollection
 COLLECTION_TYPES[list] = ModelList
 COLLECTION_TYPES[set] = ModelSet
 COLLECTION_TYPES[OrderedSet] = ModelSet

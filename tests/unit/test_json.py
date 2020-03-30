@@ -43,4 +43,6 @@ def test_from_json_invalid():
 
     when_called = User.from_json.when.called_with(42)
 
-    when_called.should.have.raised(errors.InvalidJSON, "42 cannot be parsed as a dict")
+    when_called.should.have.raised(
+        errors.InvalidJSON, "42 cannot be parsed as a dict"
+    )

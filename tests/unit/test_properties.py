@@ -30,7 +30,9 @@ def test_getters():
     )
 
     chuck.get_table_columns().should.equal(["id", "username", "email", "ref"])
-    chuck.get_table_rows().should.equal([[1, "chucknorris", "chuck@norris.com", None]])
+    chuck.get_table_rows().should.equal(
+        [[1, "chucknorris", "chuck@norris.com", None]]
+    )
 
 
 def test_setters():
@@ -40,7 +42,11 @@ def test_setters():
 
     chuck.username.should.equal("johndoe")
     chuck.to_dict().should.equal(
-        {"username": "johndoe", "github_token": "foobar", "jira_token": "trello"}
+        {
+            "username": "johndoe",
+            "github_token": "foobar",
+            "jira_token": "trello",
+        }
     )
 
     chuck.username = "chucknorris"
@@ -160,10 +166,18 @@ def test_nonzero():
 
 def test_hashing():
     chuck1 = Account(
-        **{"id": 10000, "username": "chucknorris", "email": "root@chucknorris.com"}
+        **{
+            "id": 10000,
+            "username": "chucknorris",
+            "email": "root@chucknorris.com",
+        }
     )
     chuck2 = Account(
-        **{"id": 10000, "username": "chucknorris", "email": "root@chucknorris.com"}
+        **{
+            "id": 10000,
+            "username": "chucknorris",
+            "email": "root@chucknorris.com",
+        }
     )
     chuck3 = Account(
         **{"id": 2, "username": "chucknorris", "email": "root@chucknorris.com"}

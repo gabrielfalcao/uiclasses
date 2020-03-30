@@ -104,11 +104,14 @@ def list_visible_field_names_from_dataclass(cls: Type):
     extra = [
         f.name
         for f in fields(cls)
-        if f.name not in names and f.repr and not isinstance(f.type, PropertyMetadata)
+        if f.name not in names
+        and f.repr
+        and not isinstance(f.type, PropertyMetadata)
     ]
     names.extend(extra)
     return list(
-        OrderedSet(names) - OrderedSet([f.name for f in extract_props_from_class(cls)])
+        OrderedSet(names)
+        - OrderedSet([f.name for f in extract_props_from_class(cls)])
     )
 
 
