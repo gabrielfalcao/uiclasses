@@ -58,7 +58,7 @@ from .typing import PropertyMetadata, parse_bool
 COLLECTION_TYPES = {}
 
 if sys.version_info < (3, 7, 0):
-    types_without_cast_support = (type(typing.Any), type(typing.Generic))
+    types_without_cast_support = (type(typing.Any), type(typing.Generic), type(typing.Union))
 else:
     types_without_cast_support = (typing._SpecialForm, typing._GenericAlias)
 
