@@ -11,8 +11,7 @@ class BlogPost(Model):
 
 def test_from_generator():
     generator = (
-        BlogPost(id=x, title=f"title {x}", body=f"body {x}")
-        for x in range(100)
+        BlogPost(id=x, title=f"title {x}", body=f"body {x}") for x in range(100)
     )
     result = BlogPost.List(generator)
     result.should.be.a(ModelList)

@@ -91,9 +91,7 @@ def test_getbool():
 
     # non-strings
     User(dict(verified=True)).getbool("verified").should.equal(True)
-    User(dict(verified={"some": "dict"})).getbool("verified").should.equal(
-        True
-    )
+    User(dict(verified={"some": "dict"})).getbool("verified").should.equal(True)
 
     User(dict(verified=False)).getbool("verified").should.equal(False)
     User(dict(verified={})).getbool("verified").should.equal(False)
@@ -191,9 +189,7 @@ def test_create_model_with_nondict_data():
 
 
 def test_create_model_with_kwarg_type_mismatching_field_declaration():
-    when_created = User.when.called_with(
-        id=1, username={"a set, not a string"}
-    )
+    when_created = User.when.called_with(id=1, username={"a set, not a string"})
 
     when_created.should.have.raised(
         TypeError, "username is not a <class 'str'>: {'a set, not a string'}"
