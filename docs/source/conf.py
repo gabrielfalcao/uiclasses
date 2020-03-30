@@ -40,7 +40,7 @@ copyright = "2020, NewStore GmbH"
 author = "NewStore GmbH"
 
 # The full version, including alpha/beta/rc tags
-release = "2.0.3"
+release = "2.1.0"
 
 
 # -- General configuration ---------------------------------------------------
