@@ -11,6 +11,7 @@ UIClasses - Data-Modeling for User Interfaces
    :maxdepth: 4
    :caption: Contents:
 
+   installation
    tutorial
    api
    changelog
