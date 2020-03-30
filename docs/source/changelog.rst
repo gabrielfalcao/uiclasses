@@ -3,6 +3,12 @@
 Release History
 ---------------
 
+Changes in 2.1.0
+~~~~~~~~~~~~~~~~
+
+- Support nested model types.
+- Cast values to their known type when instantiating a new Model.
+
 Changes in 2.0.3
 ~~~~~~~~~~~~~~~~
 
