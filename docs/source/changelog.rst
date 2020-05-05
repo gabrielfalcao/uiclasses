@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+Changes in 2.2.1
+~~~~~~~~~~~~~~~~
+
+- Add behavior to ``uiclasses.collections.is_iterable()`` consider
+  anything with a callable ``__iter__`` attribute a callable.
+
+
 Changes in 2.2.0
 ~~~~~~~~~~~~~~~~
 

@@ -34,7 +34,12 @@ ITERABLES = (list, tuple, itertools.chain, set, map, filter, GeneratorType)
 
 
 def is_iterable(values) -> bool:
-    return isinstance(values, ITERABLES + (IterableCollection,))
+    return any(
+        [
+            isinstance(values, ITERABLES + (IterableCollection,)),
+            callable(getattr(values, "__iter__", None)),
+        ]
+    )
 
 
 class IterableCollection(UserFriendlyObject):
