@@ -33,6 +33,10 @@ from . import typing as internal_typing
 ITERABLES = (list, tuple, itertools.chain, set, map, filter, GeneratorType)
 
 
+def is_iterable(values) -> bool:
+    return isinstance(values, ITERABLES + (IterableCollection, ))
+
+
 class IterableCollection(UserFriendlyObject):
     """Base mixin for ModelList and ModelSet, provides methods to
     manipulate iterable collections in ways take advantage of the
@@ -205,11 +209,12 @@ class ModelList(list, IterableCollection):
     def __init__(self, children: Iterable[Model]):
         model_class = self.__of_model__
 
-        if not isinstance(children, ITERABLES):
+        if not is_iterable(children):
             raise TypeError(
                 f"{self.__class__.__name__} requires the 'children' attribute to be "
                 f"a valid iterable, got {children!r} {type(children)} instead"
             )
+
         items = []
         for index, child in enumerate(children):
             if isinstance(child, dict):
@@ -235,7 +240,7 @@ class ModelSet(OrderedSet, IterableCollection):
     def __init__(self, children: Iterable[Model]):
         model_class = getattr(self, "__of_model__", None)
 
-        if not isinstance(children, ITERABLES):
+        if not is_iterable(children):
             raise TypeError(
                 f"{self.__class__.__name__} requires the 'children' attribute to be "
                 f"a valid iterable, got {children!r} {type(children)} instead"

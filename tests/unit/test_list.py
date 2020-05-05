@@ -48,6 +48,21 @@ def test_to_dict():
     third_list.should.have.length_of(2)
 
 
+def test_shallow_copy():
+    post1 = BlogPost(dict(id=1, title="title 1", body="body 1"))
+
+    post2 = BlogPost(dict(id=2, title="title 2", body="body 2"))
+
+    posts = BlogPost.List([post1, post2])
+    posts.should.be.a(ModelList)
+
+    copy1 = BlogPost.List(posts)
+    copy1.should.equal(posts)
+
+    copy2 = posts.copy()
+    copy2.should.equal(posts)
+
+
 def test_sorted_by():
 
     post1 = BlogPost(dict(id=1, title="title 1", body="body 1"))

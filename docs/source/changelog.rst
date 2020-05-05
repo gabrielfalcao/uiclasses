@@ -14,6 +14,9 @@ Changes in 2.2.0
   through ``Model.__declared_attributes__`` which
   ``__visible_attributes__`` (if any) with types from annotations.
 
+- Support casting IterableCollection with itself and
+  introduce ``uiclasses.collections.is_iterable()`` helper function.
+
 Changes in 2.1.0
 ~~~~~~~~~~~~~~~~
 

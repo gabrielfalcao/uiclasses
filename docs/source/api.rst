@@ -70,7 +70,7 @@ DataBagChild
 .. autoclass:: uiclasses.DataBagChild
 
 
-IterableColletion
+IterableCollection
 -----------------
 
 .. autoclass:: uiclasses.collections.IterableCollection

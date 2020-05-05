@@ -45,6 +45,22 @@ def test_to_dict():
     second_set.should.equal(posts)
 
 
+def test_shallow_copy():
+    post1 = Essay(dict(id="1", title="title 1", body="body 1"))
+
+    post2 = Essay(dict(id="2", title="title 2", body="body 2"))
+
+    posts = Essay.Set([post1, post2])
+
+    posts.should.be.a(ModelSet)
+
+    copy1 = Essay.Set(posts)
+    copy1.should.equal(posts)
+
+    copy2 = posts.copy()
+    copy2.should.equal(posts)
+
+
 def test_sorted_by():
 
     post1 = Essay(dict(id="1", title="title 1", body="body 1"))
