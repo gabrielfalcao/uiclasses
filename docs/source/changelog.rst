@@ -17,6 +17,9 @@ Changes in 2.2.0
 - Support casting IterableCollection with itself and
   introduce ``uiclasses.collections.is_iterable()`` helper function.
 
+- Show RuntimeWarning if typing module is installed as distribution
+  package in python > 3.6.1.
+
 Changes in 2.1.0
 ~~~~~~~~~~~~~~~~
 

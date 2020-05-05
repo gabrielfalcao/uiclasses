@@ -19,6 +19,19 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import sys
+import warnings
+
+if sys.version_info > (3, 6, 1):
+    import typing
+
+    if "site-packages" in typing.__file__:
+        warnings.warn(
+            "The typing module is installed via pip, "
+            "this can cause problems in python > 3.6.2. "
+            "Run `pip uninstall typing` to prevent this.",
+            RuntimeWarning,
+        )
 
 from .base import (
     Model,
@@ -31,3 +44,19 @@ from .base import (
 )
 from .base import try_int, try_json
 from .collections import ModelList, ModelSet, IterableCollection
+
+
+__all__ = [
+    "Model",
+    "traverse_dict_children",
+    "repr_attributes",
+    "UserFriendlyObject",
+    "DataBag",
+    "DataBagChild",
+    "basic_dataclass",
+    "try_int",
+    "try_json",
+    "ModelList",
+    "ModelSet",
+    "IterableCollection",
+]
