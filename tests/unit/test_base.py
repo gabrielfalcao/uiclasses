@@ -166,7 +166,9 @@ def test_format_pretty_table():
         {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
     )
     chuck.get_table_columns().should.equal(["id", "username", "email"])
-    chuck.get_table_rows().should.equal([[1, "chucknorris", "root@chucknorris.com"]])
+    chuck.get_table_rows().should.equal(
+        [[1, "chucknorris", "root@chucknorris.com"]]
+    )
 
     chuck.format_pretty_table().should.equal(
         format_pretty_table(
@@ -184,10 +186,7 @@ def test_format_pretty_table_without_explicit_visible_attributes():
     chuck.get_table_rows().should.equal([["Chuck Norris", 42]])
 
     chuck.format_pretty_table().should.equal(
-        format_pretty_table(
-            [["Chuck Norris", 42]],
-            ["name", "age"],
-        )
+        format_pretty_table([["Chuck Norris", 42]], ["name", "age"])
     )
 
 

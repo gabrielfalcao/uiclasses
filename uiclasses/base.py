@@ -209,16 +209,20 @@ class MetaModel(type):
         from_dunder_declaration = list(
             extract_attribute_from_class_definition(
                 "__visible_attributes__", cls, attrs, default=visible
-            ),
+            )
         )
         visible = list(OrderedSet(visible) - OrderedSet(known_setters))
         visible.extend(from_annotations)
 
-        if len(from_dunder_declaration) == 0:  # when a __visible_attributes__ is not explicitly set
+        if (
+            len(from_dunder_declaration) == 0
+        ):  # when a __visible_attributes__ is not explicitly set
             attrs["__visible_attributes__"] = visible
             cls.__visible_attributes__ = attrs["__visible_attributes__"]
 
-        attrs["__declared_attributes__"] = unique(list(from_dunder_declaration) + list(visible))
+        attrs["__declared_attributes__"] = unique(
+            list(from_dunder_declaration) + list(visible)
+        )
         cls.__declared_attributes__ = attrs["__declared_attributes__"]
 
         ids = extract_attribute_from_class_definition(
