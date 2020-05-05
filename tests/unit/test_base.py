@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Any, Type, TypeVar, Generic
 from uiclasses import Model
+from uiclasses.typing import Property
 
 from humanfriendly.tables import format_robust_table, format_pretty_table
 
@@ -20,6 +21,12 @@ class User(Model):
     __visible_attributes__ = ["id", "username", "email"]
     id: int
     username: str
+
+
+class Person(Model):
+    name: str
+    age: int
+    email: Property[str]
 
 
 def test_casting_generics_and_special_types():
@@ -158,10 +165,28 @@ def test_format_pretty_table():
     chuck = User(
         {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
     )
+    chuck.get_table_columns().should.equal(["id", "username", "email"])
+    chuck.get_table_rows().should.equal([[1, "chucknorris", "root@chucknorris.com"]])
+
     chuck.format_pretty_table().should.equal(
         format_pretty_table(
             [[1, "chucknorris", "root@chucknorris.com"]],
             ["id", "username", "email"],
+        )
+    )
+
+
+def test_format_pretty_table_without_explicit_visible_attributes():
+    chuck = Person(
+        {"age": 42, "name": "Chuck Norris", "email": "root@chucknorris.com"}
+    )
+    chuck.get_table_columns().should.equal(["name", "age"])
+    chuck.get_table_rows().should.equal([["Chuck Norris", 42]])
+
+    chuck.format_pretty_table().should.equal(
+        format_pretty_table(
+            [["Chuck Norris", 42]],
+            ["name", "age"],
         )
     )
 

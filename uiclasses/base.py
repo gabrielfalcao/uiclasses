@@ -24,7 +24,6 @@ import json
 import hashlib
 import typing
 import dataclasses
-from typing import NewType
 
 from dataclasses import Field
 from ordered_set import OrderedSet
@@ -39,18 +38,19 @@ from . import errors
 from .meta import is_builtin_class_except
 from .utils import (
     basic_dataclass,
-    repr_attributes,
-    traverse_dict_children,
-    try_int,
-    try_json,
-    try_dict,
     extract_attribute_from_class_definition,
-    list_field_names_from_dataclass,
-    list_visible_field_names_from_dataclass,
-    list_getters_from_metaclass,
-    list_setters_from_metaclass,
     get_getter_by_name,
     get_setter_by_name,
+    list_field_names_from_dataclass,
+    list_getters_from_metaclass,
+    list_setters_from_metaclass,
+    list_visible_field_names_from_dataclass,
+    repr_attributes,
+    traverse_dict_children,
+    try_dict,
+    try_int,
+    try_json,
+    unique,
 )
 from . import typing as internal_typing
 from .typing import PropertyMetadata, parse_bool
@@ -206,18 +206,20 @@ class MetaModel(type):
         visible = []
 
         from_annotations = list_visible_field_names_from_dataclass(cls)
-        from_dunder_declaration = filter(
-            lambda name: name not in from_annotations,
+        from_dunder_declaration = list(
             extract_attribute_from_class_definition(
                 "__visible_attributes__", cls, attrs, default=visible
             ),
         )
-        visible.extend(from_annotations)
-        visible.extend(from_dunder_declaration)
-
         visible = list(OrderedSet(visible) - OrderedSet(known_setters))
-        attrs["__visible_attributes__"] = visible
-        cls.__visible_attributes__ = visible
+        visible.extend(from_annotations)
+
+        if len(from_dunder_declaration) == 0:  # when a __visible_attributes__ is not explicitly set
+            attrs["__visible_attributes__"] = visible
+            cls.__visible_attributes__ = attrs["__visible_attributes__"]
+
+        attrs["__declared_attributes__"] = unique(list(from_dunder_declaration) + list(visible))
+        cls.__declared_attributes__ = attrs["__declared_attributes__"]
 
         ids = extract_attribute_from_class_definition(
             "__id_attributes__", cls, attrs, default=[]
@@ -436,11 +438,11 @@ class Model(DataBag, metaclass=MetaModel):
 
 
 def allowed_getters(cls: Model):
-    return set(cls.__known_getters__).union(set(cls.__visible_attributes__))
+    return set(cls.__known_getters__).union(set(cls.__declared_attributes__))
 
 
 def allowed_setters(cls: Model):
-    return set(cls.__known_setters__).union(set(cls.__visible_attributes__))
+    return set(cls.__known_setters__).union(set(cls.__declared_attributes__))
 
 
 def cast_field(field, value):

@@ -28,6 +28,10 @@ from dataclasses import dataclass, fields
 from uiclasses.typing import PropertyMetadata
 
 
+def unique(items: List[Any]) -> List[Any]:
+    return list(OrderedSet(items))
+
+
 def basic_dataclass(cls):
     """A simple alias to ``dataclasses.dataclass(init=False, eq=False, unsafe_hash=False, repr=False)``
     """

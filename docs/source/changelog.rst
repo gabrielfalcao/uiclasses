@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+Changes in 2.2.0
+~~~~~~~~~~~~~~~~
+
+- Change behavior of explicit ``__visible_attributes__`` declaration:
+  when declared, the visible fields will be exactly those. If not
+  declared, visible fields will be extracted from type annotations.
+
+- The old behavior of ``__visible_attributes__`` is now available
+  through ``Model.__declared_attributes__`` which
+  ``__visible_attributes__`` (if any) with types from annotations.
+
 Changes in 2.1.0
 ~~~~~~~~~~~~~~~~
 
