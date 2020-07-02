@@ -200,9 +200,21 @@ class IterableCollection(UserFriendlyObject):
 
         return columns
 
-    def to_dict(self) -> Iterable[dict]:
+    def to_dict(self, only_visible: bool = False) -> Iterable[dict]:
         """calls ``.to_dict()`` in each children of this collection."""
-        return [m.to_dict() for m in self]
+        return [m.to_dict(only_visible=only_visible) for m in self]
+
+    def serialize(self, only_visible: bool = False) -> Iterable[dict]:
+        """calls ``.serialize()`` in each children of this collection."""
+        return [m.serialize(only_visible=only_visible) for m in self]
+
+    def serialize_visible(self) -> Iterable[dict]:
+        """calls ``.serialize_visible()`` in each children of this collection."""
+        return [m.serialize_visible() for m in self]
+
+    def serialize_all(self) -> Iterable[dict]:
+        """calls ``.serialize_all()`` in each children of this collection."""
+        return [m.serialize_all() for m in self]
 
 
 class ModelList(list, IterableCollection):

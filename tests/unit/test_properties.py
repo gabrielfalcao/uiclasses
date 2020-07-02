@@ -46,6 +46,7 @@ def test_setters():
             "username": "johndoe",
             "github_token": "foobar",
             "jira_token": "trello",
+            "verified": False,
         }
     )
 
@@ -89,7 +90,7 @@ def test_construct_with_dict_like_object():
             "username": "chucknorris",
             "email": "root@chucknorris.com",
             "jira_token": None,
-            "verified": None,
+            "verified": False,
         }
     )
     chuck.__ui_attributes__().should.equal(
@@ -115,7 +116,7 @@ def test_construct_with_kwargs():
             "id": 1,
             "username": "chucknorris",
             "email": "root@chucknorris.com",
-            "verified": None,
+            "verified": False,
             "jira_token": None,
         }
     )
@@ -150,10 +151,10 @@ def test_getbool():
 
 def test_construct_with_dict():
     chuck = Account(
-        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com", "verified": False}
     )
     chuck.to_dict().should.equal(
-        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com"}
+        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com", "verified": False}
     )
 
 

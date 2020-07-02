@@ -364,24 +364,57 @@ class Model(DataBag, metaclass=MetaModel):
         string = json.dumps(values)
         return int(hashlib.sha1(bytes(string, "ascii")).hexdigest(), 16)
 
-    def serialize(self) -> dict:
+    def serialize(self, only_visible: bool = False) -> dict:
+        if only_visible:
+            return self.serialize_visible()
+        else:
+            return self.serialize_all()
+
+    def serialize_field(self, field_name: str, field_type: typing.Optional[type], only_visible: bool = False) -> Any:
+        value = getattr(self, field_name, self.__data__.get(field_name))
+
+        if not value:
+            return value
+        if isinstance(field_type, type):
+            try:
+                value = field_type(value)
+            except Exception as e:
+                handle_unexpected_error(e)
+
+        if hasattr(value, 'to_dict') and callable(value.to_dict):
+            return value.to_dict(only_visible=only_visible)
+
+        return value
+
+    def serialize_all(self) -> dict:
         data = self.__data__.copy()
-        IterableCollection = COLLECTION_TYPES[iter]
-        Serializable = (Model, IterableCollection)
-        for field in dataclasses.fields(self.__class__):
-            value = data.get(field.name)
-            if field.type == bool:
-                data[field.name] = self.getbool(field.name)
-            elif isinstance(field.type, type) and issubclass(
-                field.type, Serializable
-            ):
-                if isinstance(value, Serializable):
-                    data[field.name] = value.to_dict()
+
+        for field_name, field_type in self.get_field_types():
+            value = self.serialize_field(field_name, field_type, only_visible=False)
+            if value is not None:
+                data[field_name] = value
 
         return data
 
-    def to_dict(self):
-        return self.serialize()
+    @classmethod
+    def get_field_types(cls) -> Tuple[str, type]:
+        return [(f.name, f.type) for f in dataclasses.fields(cls)]
+
+    def serialize_visible(self) -> dict:
+        data = {}
+        types = dict(self.get_field_types())
+
+        for field_name in self.get_table_columns():
+            field_type = types.get(field_name)
+
+            value = self.serialize_field(field_name, field_type, only_visible=True)
+            if value is not None:
+                data[field_name] = value
+
+        return data
+
+    def to_dict(self, only_visible: bool = False):
+        return self.serialize(only_visible=only_visible)
 
     @classmethod
     def from_json(cls, json_string: str) -> "Model":
@@ -393,9 +426,9 @@ class Model(DataBag, metaclass=MetaModel):
 
         return cls(data)
 
-    def to_json(self, *args, **kw):
+    def to_json(self, only_visible: bool = False, *args, **kw):
         kw["default"] = kw.pop("default", str)
-        return json.dumps(self.to_dict(), *args, **kw)
+        return json.dumps(self.to_dict(only_visible=only_visible), *args, **kw)
 
     def __ui_attributes__(self):
         return dict(
@@ -475,3 +508,8 @@ def cast_field(field, value):
         raise TypeError(f"{name} is not a {field.type}: {value!r}")
 
     return value or original
+
+
+def handle_unexpected_error(e: Exception):
+    """noop"""
+    # TODO: allow users to hook exception handlers and trigger those handlers here

@@ -3,6 +3,31 @@
 Release History
 ---------------
 
+Changes in 2.3.2
+~~~~~~~~~~~~~~~~
+
+- Add same ``only_visible`` of ``serialize()`` to ``to_dict()`` and
+  ``serialize_field()``.
+
+- Pass correct ``only_visible`` within ``serialize_all()`` and
+  ``serialize_visible()``.
+
+Changes in 2.3.1
+~~~~~~~~~~~~~~~~
+
+- Change behavior of ``serialize_visible()`` to omit ``None`` values.
+
+Changes in 2.3.0
+~~~~~~~~~~~~~~~~
+
+- Add method ``serialize_visible()`` and ``serialize_all()`` to
+  ``Model`` and ``IterableCollection``.
+
+- Add boolean parameter ``only_visible`` in
+  ``uiclasses.base.Model.serialize()`` - to decide whether to call
+  ``serialize_visible()`` or ``serialize_all()``.
+
+
 Changes in 2.2.1
 ~~~~~~~~~~~~~~~~
 

@@ -111,6 +111,25 @@ def test_model_with_nested_modellist_auto_cast():
             ],
         }
     )
+    route1.serialize_visible().should.equal(
+        {
+            "name": "ping",
+            "basepath": "/_/v1",
+            "upstream_protocol": "http",
+            "version": 1,
+            "resource_set": "ping",
+            "visibility": "internal",
+            "resources": [
+                {
+                    "uri": "ping",
+                    "http_method": "GET",
+                    "cached": 0,
+                    "auth_type": "",
+                    "cross_origin": False,
+                }
+            ],
+        }
+    )
 
 
 def test_model_with_nested_model_auto_cast():

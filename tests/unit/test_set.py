@@ -44,6 +44,31 @@ def test_to_dict():
     second_set = Essay.Set(posts.to_dict())
     second_set.should.equal(posts)
 
+def test_serialize_visible():
+
+    post1 = Essay(dict(id="1", title="title 1", body="body 1"))
+
+    post2 = Essay(dict(id="2", title="title 2", body="body 2"))
+
+    posts = Essay.Set([post1, post2])
+
+    posts.should.be.a(ModelSet)
+
+    posts.serialize_visible().should.equal(
+        [
+            {"id": "1", "title": "title 1", "body": "body 1"},
+            {"id": "2", "title": "title 2", "body": "body 2"},
+        ]
+    )
+
+    repr(posts).should.equal(
+        "Essay.Set([<Essay id='1' title='title 1' body='body 1'>, <Essay id='2' title='title 2' body='body 2'>])"
+    )
+    str(posts).should.equal("Essay.Set[length=2]")
+
+    second_set = Essay.Set(posts.serialize_visible())
+    second_set.should.equal(posts)
+
 
 def test_shallow_copy():
     post1 = Essay(dict(id="1", title="title 1", body="body 1"))

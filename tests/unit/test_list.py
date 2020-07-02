@@ -47,6 +47,35 @@ def test_to_dict():
     third_list.should.be.a(BlogPost.Set)
     third_list.should.have.length_of(2)
 
+def test_serialize_visible():
+
+    post1 = BlogPost(dict(id=1, title="title 1", body="body 1"))
+
+    post2 = BlogPost(dict(id=2, title="title 2", body="body 2"))
+
+    posts = BlogPost.List([post1, post2])
+
+    posts.should.be.a(ModelList)
+
+    posts.serialize_visible().should.equal(
+        [
+            {"id": 1, "title": "title 1", "body": "body 1"},
+            {"id": 2, "title": "title 2", "body": "body 2"},
+        ]
+    )
+
+    repr(posts).should.equal(
+        "[<BlogPost id=1 title='title 1' body='body 1'>, <BlogPost id=2 title='title 2' body='body 2'>]"
+    )
+    str(posts).should.equal("BlogPost.List[length=2]")
+
+    second_list = BlogPost.List(posts.serialize_visible())
+    second_list.should.equal(posts)
+
+    third_list = BlogPost.List([post1, post2, post1, post2]).unique()
+    third_list.should.be.a(BlogPost.Set)
+    third_list.should.have.length_of(2)
+
 
 def test_shallow_copy():
     post1 = BlogPost(dict(id=1, title="title 1", body="body 1"))
