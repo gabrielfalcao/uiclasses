@@ -43,7 +43,7 @@ copyright = "2020, Gabriel Falcao"
 author = "Gabriel Falcao"
 
 # The full version, including alpha/beta/rc tags
-release = "2.3.2"
+release = "2.4.0"
 
 
 # -- General configuration ---------------------------------------------------
