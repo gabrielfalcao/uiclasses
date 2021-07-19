@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from typing import Any
+
 from uiclasses import Model
-from uiclasses.typing import Getter
-from uiclasses.typing import Setter
-from uiclasses.typing import Property
+from uiclasses.typing import Getter, Property, Setter
 
 from .helpers import AlmostDict
 
@@ -151,10 +150,20 @@ def test_getbool():
 
 def test_construct_with_dict():
     chuck = Account(
-        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com", "verified": False}
+        {
+            "id": 1,
+            "username": "chucknorris",
+            "email": "root@chucknorris.com",
+            "verified": False,
+        }
     )
     chuck.to_dict().should.equal(
-        {"id": 1, "username": "chucknorris", "email": "root@chucknorris.com", "verified": False}
+        {
+            "id": 1,
+            "username": "chucknorris",
+            "email": "root@chucknorris.com",
+            "verified": False,
+        }
     )
 
 
@@ -183,10 +192,12 @@ def test_hashing():
     chuck3 = Account(
         **{"id": 2, "username": "chucknorris", "email": "root@chucknorris.com"}
     )
+    chuck4 = Account(
+        **{"id": 2, "username": "chucknorris", "email": "root@chucknorris.com"}
+    )
 
-    hash(chuck1).should.equal(257603812906578437)
-    hash(chuck2).should.equal(257603812906578437)
-    hash(chuck3).should.equal(1454713328780367858)
+    hash(chuck1).should.equal(hash(chuck2))
+    hash(chuck3).should.equal(hash(chuck4))
 
 
 def test_equals():

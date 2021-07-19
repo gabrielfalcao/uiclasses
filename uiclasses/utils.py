@@ -1,4 +1,4 @@
-# Copyright (c) 2020 NewStore GmbH
+# Copyright (c) 2020 Gabriel Falcao
 
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -21,11 +21,24 @@
 # SOFTWARE.
 
 import json
-from typing import Any, Type, Callable, List, Union
-from ordered_set import OrderedSet
-from functools import reduce
+
 from dataclasses import dataclass, fields
+from functools import reduce
+from typing import Any, Callable, List, Type, Union
+
+from ordered_set import OrderedSet
+
 from uiclasses.typing import PropertyMetadata
+
+
+__class_fields__ = {}
+
+
+def get_class_fields(cls: Type):
+    if cls not in __class_fields__:
+        __class_fields__[cls] = fields(cls)
+
+    return __class_fields__[cls]
 
 
 def unique(items: List[Any]) -> List[Any]:
@@ -33,8 +46,7 @@ def unique(items: List[Any]) -> List[Any]:
 
 
 def basic_dataclass(cls):
-    """A simple alias to ``dataclasses.dataclass(init=False, eq=False, unsafe_hash=False, repr=False)``
-    """
+    """A simple alias to ``dataclasses.dataclass(init=False, eq=False, unsafe_hash=False, repr=False)``"""
     return dataclass(init=False, eq=False, unsafe_hash=False, repr=False)(cls)
 
 
@@ -79,8 +91,7 @@ def try_json(value: str) -> dict:
 
 
 def traverse_dict_children(data, *keys, fallback=None):
-    """attempts to retrieve the config value under the given nested keys
-    """
+    """attempts to retrieve the config value under the given nested keys"""
     value = reduce(lambda d, l: d.get(l, None) or {}, keys, data)
     return value or fallback
 
@@ -107,7 +118,7 @@ def list_visible_field_names_from_dataclass(cls: Type):
     names = getattr(cls, "__visible_attributes__", [])
     extra = [
         f.name
-        for f in fields(cls)
+        for f in get_class_fields(cls)
         if f.name not in names
         and f.repr
         and not isinstance(f.type, PropertyMetadata)
@@ -121,11 +132,13 @@ def list_visible_field_names_from_dataclass(cls: Type):
 
 def list_field_names_from_dataclass(cls: Type):
     """lists all fields from a dataclass without filter"""
-    return [f.name for f in fields(cls)]
+    return [f.name for f in get_class_fields(cls)]
 
 
 def extract_props_from_class(cls: Type) -> List[str]:
-    return filter(lambda f: isinstance(f.type, PropertyMetadata), fields(cls))
+    return filter(
+        lambda f: isinstance(f.type, PropertyMetadata), get_class_fields(cls)
+    )
 
 
 def list_getters_from_metaclass(cls: Type) -> List[str]:

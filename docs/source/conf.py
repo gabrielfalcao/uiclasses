@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+
 import sphinx_rtd_theme
+
 
 html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
@@ -15,6 +17,7 @@ doctest_path = [project_root]
 
 
 from uiclasses.version import version
+
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -36,8 +39,8 @@ from uiclasses.version import version
 # -- Project information -----------------------------------------------------
 
 project = "UIClasses"
-copyright = "2020, NewStore GmbH"
-author = "NewStore GmbH"
+copyright = "2020, Gabriel Falcao"
+author = "Gabriel Falcao"
 
 # The full version, including alpha/beta/rc tags
 release = "2.3.2"

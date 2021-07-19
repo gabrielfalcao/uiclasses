@@ -1,4 +1,4 @@
-# Copyright (c) 2020 NewStore GmbH
+# Copyright (c) 2020 Gabriel Falcao
 
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files

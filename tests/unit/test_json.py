@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
+
 from dataclasses import field
-from uiclasses import Model, errors
+
+from uiclasses import errors, Model
 
 
 class User(Model):

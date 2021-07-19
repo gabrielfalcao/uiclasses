@@ -1,4 +1,4 @@
-from uiclasses import UserFriendlyObject, basic_dataclass
+from uiclasses import basic_dataclass, UserFriendlyObject
 
 
 def test_ui_attributes():

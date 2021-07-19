@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from typing import List
+
 from uiclasses import Model
+
 
 """
 Background: Managing data from a Trello-like application

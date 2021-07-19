@@ -6,7 +6,7 @@ Code of conduct
 
 Everyone who is participating to this project is expected to uphold the
 `code of
-conduct <https://github.com/NewStore-oss/uiclasses/blob/master/CODE_OF_CONDUCT.md>`__.
+conduct <https://github.com/gabrielfalcao/uiclasses/blob/master/CODE_OF_CONDUCT.md>`__.
 
 How can I contribute?
 ---------------------
@@ -36,7 +36,7 @@ In case you find a bug please check the next points before you submit a
 bug.
 
 - Search for a similar issue in `issues
-  <https://github.com/NewStore-OSS/uiclasses/issues>`__ to prevent
+  <https://github.com/gabrielfalcao/uiclasses/issues>`__ to prevent
   duplicated tickets, this will save us time triaging bugs.
 - When creating a new issue, tag it with the label "bug"
 -  Choose a clear and descriptive title to identify the problem.
@@ -48,7 +48,7 @@ Suggestion a new feature or improvement
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Search for a similar issue in `issues
-  <https://github.com/NewStore-OSS/uiclasses/issues>`__ to prevent
+  <https://github.com/gabrielfalcao/uiclasses/issues>`__ to prevent
   duplicated tickets, this will save us time triaging bugs.
 - When creating a new issue, tag it with the label "enhancement"
 

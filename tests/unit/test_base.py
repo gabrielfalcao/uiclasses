@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from typing import Any, Type, TypeVar, Generic
+from typing import Any, Generic, Type, TypeVar
+
+from humanfriendly.tables import format_pretty_table, format_robust_table
+
 from uiclasses import Model
 from uiclasses.typing import Property
-
-from humanfriendly.tables import format_robust_table, format_pretty_table
 
 from .helpers import AlmostDict
 

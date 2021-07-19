@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from uiclasses import ModelSet, Model
-from humanfriendly.tables import format_robust_table, format_pretty_table
+from humanfriendly.tables import format_pretty_table, format_robust_table
+
+from uiclasses import Model, ModelSet
 
 
 class Essay(Model):
@@ -43,6 +44,7 @@ def test_to_dict():
 
     second_set = Essay.Set(posts.to_dict())
     second_set.should.equal(posts)
+
 
 def test_serialize_visible():
 

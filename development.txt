@@ -10,3 +10,6 @@ sphinx-rtd-theme>=0.4.3
 sphinx>=2.4.4
 sure==1.4.11
 twine>=3.1.1
+autoflake==1.4
+black==21.6b0
+isort==5.9.1

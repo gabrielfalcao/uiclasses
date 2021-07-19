@@ -3,7 +3,8 @@
 
 import ast
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 
 def local_file(*f):
@@ -37,12 +38,12 @@ setup(
     description="\n".join(["Data-Modeling for User Interfaces"]),
     long_description=local_file("README.rst"),
     entry_points={"console_scripts": ["uiclasses = uiclasses.cli:entrypoint"]},
-    url="https://github.com/NewStore-oss/uiclasses",
+    url="https://github.com/gabrielfalcao/uiclasses",
     project_urls={
         "Documentation": "https://uiclasses.readthedocs.io/en/latest/",
-        "Source Code": "https://github.com/NewStore-oss/uiclasses",
-        "Issue Tracker": "https://github.com/NewStore-oss/uiclasses/issues",
-        "Test Coverage": "https://codecov.io/gh/NewStore-oss/uiclasses",
+        "Source Code": "https://github.com/gabrielfalcao/uiclasses",
+        "Issue Tracker": "https://github.com/gabrielfalcao/uiclasses/issues",
+        "Test Coverage": "https://codecov.io/gh/gabrielfalcao/uiclasses",
     },
     packages=find_packages(exclude=["*tests*"]),
     include_package_data=True,
@@ -51,8 +52,8 @@ setup(
     },
     package_dir={"uiclasses": "uiclasses"},
     zip_safe=False,
-    author="NewStore GmbH",
-    author_email="opensource+pypi@newstore.com",
+    author="Gabriel Falcao",
+    author_email="gabriel@nacaolivre.org",
     maintainer="Gabriel Falcão",
     maintainer_email="gabriel@nacaolivre.org",
     python_requires=">=3.6",

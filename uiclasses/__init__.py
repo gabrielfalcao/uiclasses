@@ -1,4 +1,4 @@
-# Copyright (c) 2020 NewStore GmbH
+# Copyright (c) 2020 Gabriel Falcao
 
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -22,6 +22,7 @@
 import sys
 import warnings
 
+
 if sys.version_info > (3, 6, 1):
     import typing
 
@@ -34,16 +35,17 @@ if sys.version_info > (3, 6, 1):
         )
 
 from .base import (
-    Model,
-    traverse_dict_children,
-    repr_attributes,
-    UserFriendlyObject,
+    basic_dataclass,
     DataBag,
     DataBagChild,
-    basic_dataclass,
+    Model,
+    repr_attributes,
+    traverse_dict_children,
+    try_int,
+    try_json,
+    UserFriendlyObject,
 )
-from .base import try_int, try_json
-from .collections import ModelList, ModelSet, IterableCollection
+from .collections import IterableCollection, ModelList, ModelSet
 
 
 __all__ = [

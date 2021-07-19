@@ -1,4 +1,4 @@
-# Copyright (c) 2020 NewStore GmbH
+# Copyright (c) 2020 Gabriel Falcao
 
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -22,13 +22,12 @@
 
 
 class UIClassesException(Exception):
-    """base exception for anything raised within this python package
-    """
+    """base exception for anything raised within this python package"""
 
 
 class InexistentAttribute(UIClassesException):
     """raised when trying to access a key that is not present in a Model's
-    __data__ property.  """
+    __data__ property."""
 
 
 class InvalidJSON(UIClassesException):

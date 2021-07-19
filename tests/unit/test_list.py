@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from uiclasses import ModelList, Model
-from humanfriendly.tables import format_robust_table, format_pretty_table
+from humanfriendly.tables import format_pretty_table, format_robust_table
+
+from uiclasses import Model, ModelList
 
 
 class BlogPost(Model):
@@ -46,6 +47,7 @@ def test_to_dict():
     third_list = BlogPost.List([post1, post2, post1, post2]).unique()
     third_list.should.be.a(BlogPost.Set)
     third_list.should.have.length_of(2)
+
 
 def test_serialize_visible():
 

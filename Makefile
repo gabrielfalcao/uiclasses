@@ -1,4 +1,4 @@
-.PHONY: tests all unit functional clean dependencies tdd docs html purge dist
+.PHONY: tests all unit functional clean dependencies tdd docs html purge dist python-format
 
 GIT_ROOT		:= $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 DOCS_ROOT		:= $(GIT_ROOT)/docs
@@ -19,7 +19,7 @@ $(VENV):  # creates $(VENV) folder if does not exist
 	python3 -mvenv $(VENV)
 	$(VENV)/bin/pip install -U pip setuptools
 
-$(VENV)/bin/sphinx-build $(VENV)/bin/twine $(VENV)/bin/nosetests $(VENV)/bin/python $(VENV)/bin/pip: # installs latest pip
+$(VENV)/bin/autoflake $(VENV)/bin/isort $(VENV)/bin/black $(VENV)/bin/sphinx-build $(VENV)/bin/twine $(VENV)/bin/nosetests $(VENV)/bin/python $(VENV)/bin/pip: # installs latest pip
 	test -e $(VENV)/bin/pip || make $(VENV)
 	$(VENV)/bin/pip install -r development.txt
 	$(VENV)/bin/pip install -e .
@@ -75,3 +75,11 @@ clean:
 # from scratch by other tasks
 purge: clean
 	rm -rf $(VENV)
+
+
+python-format: $(VENV)/bin/autoflake $(VENV)/bin/isort $(VENV)/bin/black
+	$(VENV)/bin/isort --profile=attrs --fass --star-first --honor-noqa .
+	$(VENV)/bin/autoflake -ir uiclasses
+	$(VENV)/bin/autoflake -ir tests
+	$(VENV)/bin/black uiclasses
+	$(VENV)/bin/black tests

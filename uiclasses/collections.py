@@ -1,4 +1,4 @@
-# Copyright (c) 2020 NewStore GmbH
+# Copyright (c) 2020 Gabriel Falcao
 
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -21,16 +21,22 @@
 # SOFTWARE.
 
 import itertools
+
+from collections.abc import Sized
 from types import GeneratorType
-from .base import Model, UserFriendlyObject
-from .base import COLLECTION_TYPES
-from typing import Iterable
 from typing import Callable
+from typing import Iterable as IterableType
+from typing import TypeVar
+
+from humanfriendly.tables import format_pretty_table, format_robust_table
 from ordered_set import OrderedSet
-from humanfriendly.tables import format_robust_table, format_pretty_table
+
 from . import typing as internal_typing
+from .base import COLLECTION_TYPES, Model, UserFriendlyObject
+
 
 ITERABLES = (list, tuple, itertools.chain, set, map, filter, GeneratorType)
+T = TypeVar("T")
 
 
 def is_iterable(values) -> bool:
@@ -42,7 +48,7 @@ def is_iterable(values) -> bool:
     )
 
 
-class IterableCollection(UserFriendlyObject):
+class IterableCollection(UserFriendlyObject, Sized, IterableType[T]):
     """Base mixin for ModelList and ModelSet, provides methods to
     manipulate iterable collections in ways take advantage of the
     behavior of models.
@@ -68,6 +74,13 @@ class IterableCollection(UserFriendlyObject):
 
     def __str__(self):
         return f"{self.__ui_name__()}[length={len(self)}]"
+
+    def __iter__(self) -> IterableType[T]:
+        for x in super().__iter__():
+            yield x
+
+    def __len__(self) -> int:
+        return super().__len__()
 
     def sorted(self, **kw):
         """returns a new ``ModelList`` with this collections' children sorted.
@@ -120,7 +133,7 @@ class IterableCollection(UserFriendlyObject):
             )
         )
 
-    def filter(self, check: Callable[[Model], bool]) -> Iterable[Model]:
+    def filter(self, check: Callable[[Model], bool]) -> IterableType[Model]:
         """returns a new ``ModelList`` with this collections' children filter.
 
         Example:
@@ -133,16 +146,15 @@ class IterableCollection(UserFriendlyObject):
         results = filter(check, self)
         return self.__class__(results)
 
-    def get_table_columns(self, columns: Iterable[str] = None):
-        """proxy to :py:meth:`~uiclasses.base.Model.get_table_columns`
-        """
+    def get_table_columns(self, columns: IterableType[str] = None):
+        """proxy to :py:meth:`~uiclasses.base.Model.get_table_columns`"""
         available_columns = self.__of_model__.__visible_attributes__
         if not isinstance(columns, list):
             return available_columns
 
         return self.validate_columns(columns)
 
-    def get_table_rows(self, columns: Iterable[str] = None):
+    def get_table_rows(self, columns: IterableType[str] = None):
         """returns a list of values from the __ui_attributes__ of each child of this collection.
 
         Used by
@@ -157,7 +169,7 @@ class IterableCollection(UserFriendlyObject):
             for model in self
         ]
 
-    def get_table_columns_and_rows(self, columns: Iterable[str] = None):
+    def get_table_columns_and_rows(self, columns: IterableType[str] = None):
         """returns a 2-item tuple with columns names and row values of each
         child of this collection.
 
@@ -171,7 +183,7 @@ class IterableCollection(UserFriendlyObject):
         rows = self.get_table_rows(columns)
         return columns, rows
 
-    def format_robust_table(self, columns: Iterable[str] = None):
+    def format_robust_table(self, columns: IterableType[str] = None):
         """returns a string with a robust table ready to be printed on a terminal.
 
         powered by :py:func:`humanfriendly.tables.format_robust_table`
@@ -179,7 +191,7 @@ class IterableCollection(UserFriendlyObject):
         columns, rows = self.get_table_columns_and_rows(columns)
         return format_robust_table(rows, columns)
 
-    def format_pretty_table(self, columns: Iterable[str] = None):
+    def format_pretty_table(self, columns: IterableType[str] = None):
         """returns a string with a pretty table ready to be printed on a terminal.
 
         powered by :py:func:`humanfriendly.tables.format_pretty_table`
@@ -200,30 +212,30 @@ class IterableCollection(UserFriendlyObject):
 
         return columns
 
-    def to_dict(self, only_visible: bool = False) -> Iterable[dict]:
+    def to_dict(self, only_visible: bool = False) -> IterableType[dict]:
         """calls ``.to_dict()`` in each children of this collection."""
         return [m.to_dict(only_visible=only_visible) for m in self]
 
-    def serialize(self, only_visible: bool = False) -> Iterable[dict]:
+    def serialize(self, only_visible: bool = False) -> IterableType[dict]:
         """calls ``.serialize()`` in each children of this collection."""
         return [m.serialize(only_visible=only_visible) for m in self]
 
-    def serialize_visible(self) -> Iterable[dict]:
+    def serialize_visible(self) -> IterableType[dict]:
         """calls ``.serialize_visible()`` in each children of this collection."""
         return [m.serialize_visible() for m in self]
 
-    def serialize_all(self) -> Iterable[dict]:
+    def serialize_all(self) -> IterableType[dict]:
         """calls ``.serialize_all()`` in each children of this collection."""
         return [m.serialize_all() for m in self]
 
 
-class ModelList(list, IterableCollection):
+class ModelList(list, IterableCollection[T]):
     """Implementation of :py:class:`~uiclasses.collections.IterableCollection` for the
     :py:class:`list` type.
 
     """
 
-    def __init__(self, children: Iterable[Model]):
+    def __init__(self, children: IterableType[T]):
         model_class = self.__of_model__
 
         if not is_iterable(children):
@@ -248,13 +260,20 @@ class ModelList(list, IterableCollection):
         """returns a :py:class:`~uiclasses.collections.ModelSet` of all unique items in this :py:class:`~uiclasses.collections.ModelList`"""
         return self.__of_model__.Set(self)
 
+    def __iter__(self) -> IterableType[T]:
+        for x in super().__iter__():
+            yield x
+
+    def __len__(self) -> int:
+        return super().__len__()
+
 
 class ModelSet(OrderedSet, IterableCollection):
     """Implementation of :py:class:`~uiclasses.collections.IterableCollection` for the
     `OrderedSet <https://pypi.org/project/ordered-set/>`_ type.
     """
 
-    def __init__(self, children: Iterable[Model]):
+    def __init__(self, children: IterableType[Model]):
         model_class = getattr(self, "__of_model__", None)
 
         if not is_iterable(children):

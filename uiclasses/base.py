@@ -1,4 +1,4 @@
-# Copyright (c) 2020 NewStore GmbH
+# Copyright (c) 2020 Gabriel Falcao
 
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -11,6 +11,10 @@
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
 
+import dataclasses
+import hashlib
+import json
+
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -20,22 +24,19 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import sys
-import json
-import hashlib
 import typing
-import dataclasses
 
 from dataclasses import Field
+from fnmatch import fnmatch
+from typing import Any, List, Tuple
+
+from humanfriendly.tables import format_pretty_table, format_robust_table
 from ordered_set import OrderedSet
 
-from typing import List, Any, Tuple
-from fnmatch import fnmatch
-
-from humanfriendly.tables import format_pretty_table
-from humanfriendly.tables import format_robust_table
-
 from . import errors
+from . import typing as internal_typing
 from .meta import is_builtin_class_except
+from .typing import parse_bool, PropertyMetadata
 from .utils import (
     basic_dataclass,
     extract_attribute_from_class_definition,
@@ -52,8 +53,7 @@ from .utils import (
     try_json,
     unique,
 )
-from . import typing as internal_typing
-from .typing import PropertyMetadata, parse_bool
+
 
 COLLECTION_TYPES = {}
 
@@ -115,8 +115,7 @@ class DataBag(UserFriendlyObject):
         self.__data__.update(other or {})
 
     def traverse(self, *keys, fallback=None):
-        """attempts to retrieve the config value under the given nested keys
-        """
+        """attempts to retrieve the config value under the given nested keys"""
         value = traverse_dict_children(self.__data__, *keys, fallback=fallback)
         if isinstance(value, dict):
             return DataBagChild(value, *keys)
@@ -124,8 +123,7 @@ class DataBag(UserFriendlyObject):
         return value
 
     def __ui_attributes__(self):
-        """converts self.__data__ to dict to prevent recursion error
-        """
+        """converts self.__data__ to dict to prevent recursion error"""
         return dict(self.__data__)
 
     # rudimentary dict compatibility:
@@ -151,6 +149,9 @@ class DataBag(UserFriendlyObject):
     def get(self, *args, **kw):
         return self.__data__.get(*args, **kw)
 
+    def copy(self):
+        return self.__class__(self.__data__.copy())
+
     # other handy methods:
 
     def getbool(self, *args, **kw):
@@ -171,8 +172,7 @@ class DataBagChild(DataBag):
         super().__init__(data)
 
     def __ui_attributes__(self):
-        """converts self.__data__ to dict to prevent recursion error
-        """
+        """converts self.__data__ to dict to prevent recursion error"""
         return dict(self.__data__)
 
     def __ui_name__(self):
@@ -186,8 +186,7 @@ def is_builtin_model(target: type) -> bool:
 
 
 class MetaModel(type):
-    """metaclass for data models
-    """
+    """metaclass for data models"""
 
     def __init__(cls, name, bases, attrs):
         if is_builtin_model(cls):
@@ -208,7 +207,7 @@ class MetaModel(type):
         from_annotations = list_visible_field_names_from_dataclass(cls)
         from_dunder_declaration = list(
             extract_attribute_from_class_definition(
-                "__visible_attributes__", cls, attrs, default=visible
+                "__visible_attributes__", cls, attrs, default=[]
             )
         )
         visible = list(OrderedSet(visible) - OrderedSet(known_setters))
@@ -242,12 +241,12 @@ class MetaModel(type):
         cls.Set = attrs["Set"] = type(
             SetName, (COLLECTION_TYPES[set],), {"__of_model__": cls}
         )
-        cls.Set.Type = internal_typing.ModelSet[cls]
+        cls.Set.Type = internal_typing.Set[cls]
         ListName = f"{name}.List"
         cls.List = attrs["List"] = type(
             ListName, (COLLECTION_TYPES[list],), {"__of_model__": cls}
         )
-        cls.List.Type = internal_typing.ModelList[cls]
+        cls.List.Type = internal_typing.List[cls]
 
 
 class Model(DataBag, metaclass=MetaModel):
@@ -303,7 +302,7 @@ class Model(DataBag, metaclass=MetaModel):
                 continue
 
             field = known_fields.get(name)
-            if field and field.type:
+            if field and field.type and field:
                 value = cast_field(field, value)
 
             __data__[name] = value
@@ -357,11 +356,29 @@ class Model(DataBag, metaclass=MetaModel):
 
         return other.__ui_attributes__() == self.__ui_attributes__()
 
+    def __cmp__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+
+        if set(self.__data__.keys()).difference(other.__data__.keys()):
+            return False
+
+        return self.__ui_attributes__() == other.__ui_attributes__()
+
+    def __ne__(self, other):
+        if not isinstance(other, type(self)):
+            return True
+
+        return other.serialize() != self.serialize()
+
     def __hash__(self):
-        values = dict(
-            [(k, try_int(self.get(k))) for k in self.__id_attributes__]
-        )
-        string = json.dumps(values)
+        orig = self.serialize(only_visible=False)
+        values = {}
+        for k in self.__id_attributes__:
+            value = orig.get(k)
+            if value is not None:
+                values[k] = value
+        string = json.dumps(values, default=repr)
         return int(hashlib.sha1(bytes(string, "ascii")).hexdigest(), 16)
 
     def serialize(self, only_visible: bool = False) -> dict:
@@ -370,7 +387,12 @@ class Model(DataBag, metaclass=MetaModel):
         else:
             return self.serialize_all()
 
-    def serialize_field(self, field_name: str, field_type: typing.Optional[type], only_visible: bool = False) -> Any:
+    def serialize_field(
+        self,
+        field_name: str,
+        field_type: typing.Optional[type],
+        only_visible: bool = False,
+    ) -> Any:
         value = getattr(self, field_name, self.__data__.get(field_name))
 
         if not value:
@@ -381,7 +403,7 @@ class Model(DataBag, metaclass=MetaModel):
             except Exception as e:
                 handle_unexpected_error(e)
 
-        if hasattr(value, 'to_dict') and callable(value.to_dict):
+        if hasattr(value, "to_dict") and callable(value.to_dict):
             return value.to_dict(only_visible=only_visible)
 
         return value
@@ -390,7 +412,9 @@ class Model(DataBag, metaclass=MetaModel):
         data = self.__data__.copy()
 
         for field_name, field_type in self.get_field_types():
-            value = self.serialize_field(field_name, field_type, only_visible=False)
+            value = self.serialize_field(
+                field_name, field_type, only_visible=False
+            )
             if value is not None:
                 data[field_name] = value
 
@@ -407,7 +431,9 @@ class Model(DataBag, metaclass=MetaModel):
         for field_name in self.get_table_columns():
             field_type = types.get(field_name)
 
-            value = self.serialize_field(field_name, field_type, only_visible=True)
+            value = self.serialize_field(
+                field_name, field_type, only_visible=True
+            )
             if value is not None:
                 data[field_name] = value
 

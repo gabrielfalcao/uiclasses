@@ -1,4 +1,4 @@
-# Copyright (c) 2020 NewStore GmbH
+# Copyright (c) 2020 Gabriel Falcao
 
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -27,8 +27,10 @@ runtime helper functions used for leveraging idiosyncrasies of testing.
 
 import json
 import logging
-from typing import List
+
 from pathlib import Path
+from typing import List
+
 from . import Model
 
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2020 NewStore GmbH
+# Copyright (c) 2020 Gabriel Falcao
 
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -25,8 +25,7 @@ from typing import List
 
 
 def is_builtin_class_except(target: type, except_names: List[str]) -> bool:
-    """returns ``True`` if the given class children of one of metaclasses built in :py:mod:`uiclasses.base`'.
-    """
+    """returns ``True`` if the given class children of one of metaclasses built in :py:mod:`uiclasses.base`'."""
 
     return (
         target.__module__.startswith("uiclasses.")

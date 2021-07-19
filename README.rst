@@ -5,20 +5,20 @@ UIClasses - Data-Modeling for User Interfaces
 .. image:: https://img.shields.io/pypi/dm/uiclasses
    :target: https://pypi.org/project/uiclasses
 
-.. image:: https://img.shields.io/codecov/c/github/NewStore-oss/uiclasses
-   :target: https://codecov.io/gh/NewStore-oss/uiclasses
+.. image:: https://img.shields.io/codecov/c/github/gabrielfalcao/uiclasses
+   :target: https://codecov.io/gh/gabrielfalcao/uiclasses
 
-.. image:: https://img.shields.io/github/workflow/status/NewStore-oss/uiclasses/python-3.6?label=python%203.6
-   :target: https://github.com/NewStore-oss/uiclasses/actions
+.. image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-3.6?label=python%203.6
+   :target: https://github.com/gabrielfalcao/uiclasses/actions
 
-.. image:: https://img.shields.io/github/workflow/status/NewStore-oss/uiclasses/python-3.7?label=python%203.7
-   :target: https://github.com/NewStore-oss/uiclasses/actions
+.. image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-3.7?label=python%203.7
+   :target: https://github.com/gabrielfalcao/uiclasses/actions
 
 .. image:: https://img.shields.io/readthedocs/uiclasses
    :target: https://uiclasses.readthedocs.io/
 
-.. image:: https://img.shields.io/github/license/NewStore-oss/uiclasses?label=Github%20License
-   :target: https://github.com/NewStore-oss/uiclasses/blob/master/LICENSE
+.. image:: https://img.shields.io/github/license/gabrielfalcao/uiclasses?label=Github%20License
+   :target: https://github.com/gabrielfalcao/uiclasses/blob/master/LICENSE
 
 .. image:: https://img.shields.io/pypi/v/uiclasses
    :target: https://pypi.org/project/uiclasses
@@ -38,11 +38,11 @@ UIClasses - Data-Modeling for User Interfaces
 .. image:: https://img.shields.io/pypi/implementation/uiclasses
    :target: https://pypi.org/project/uiclasses
 
-.. image:: https://img.shields.io/snyk/vulnerabilities/github/NewStore-oss/uiclasses
-   :target: https://github.com/NewStore-oss/uiclasses/network/alerts
+.. image:: https://img.shields.io/snyk/vulnerabilities/github/gabrielfalcao/uiclasses
+   :target: https://github.com/gabrielfalcao/uiclasses/network/alerts
 
-.. image:: https://img.shields.io/github/v/tag/NewStore-oss/uiclasses
-   :target: https://github.com/NewStore-oss/uiclasses/releases
+.. image:: https://img.shields.io/github/v/tag/gabrielfalcao/uiclasses
+   :target: https://github.com/gabrielfalcao/uiclasses/releases
 
 - Powered by `Python 3 Data Classes <https://docs.python.org/3/library/dataclasses.html>`_.
 - Objects optimized for user interfaces.
@@ -84,14 +84,14 @@ Basic Usage
    print(published.format_pretty_table())
 
 
-.. image:: https://github.com/NewStore-oss/uiclasses/raw/master/docs/source/_static/screenshot-blog-list-pretty-table.png
+.. image:: https://github.com/gabrielfalcao/uiclasses/raw/master/docs/source/_static/screenshot-blog-list-pretty-table.png
 
 
 .. code:: python
 
    print(published.format_robust_table())
 
-.. image:: https://github.com/NewStore-oss/uiclasses/raw/master/docs/source/_static/screenshot-blog-list-robust-table.png
+.. image:: https://github.com/gabrielfalcao/uiclasses/raw/master/docs/source/_static/screenshot-blog-list-robust-table.png
 
 
 
