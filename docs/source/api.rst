@@ -71,7 +71,7 @@ DataBagChild
 
 
 IterableCollection
------------------
+------------------
 
 .. autoclass:: uiclasses.collections.IterableCollection
 
