@@ -40,7 +40,7 @@ from .base import (
     DataBagChild,
     Model,
     repr_attributes,
-    traverse_dict_children,
+    traverse_dict_descendants,
     try_int,
     try_json,
     UserFriendlyObject,
@@ -50,7 +50,7 @@ from .collections import IterableCollection, ModelList, ModelSet
 
 __all__ = [
     "Model",
-    "traverse_dict_children",
+    "traverse_dict_descendants",
     "repr_attributes",
     "UserFriendlyObject",
     "DataBag",

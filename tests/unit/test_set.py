@@ -197,5 +197,5 @@ def test_model_set_not_iterable():
     when_called = Essay.Set.when.called_with(None)
     when_called.should.have.raised(
         TypeError,
-        "Essay.Set requires the 'children' attribute to be a valid iterable, got None <class 'NoneType'> instead",
+        "Essay.Set requires the 'descendants' attribute to be a valid iterable, got None <class 'NoneType'> instead",
     )

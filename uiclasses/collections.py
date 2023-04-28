@@ -55,7 +55,7 @@ class IterableCollection(UserFriendlyObject, Sized, IterableType[T]):
 
 
     For example it supports filtering by instance attributes through a cal to the
-    :py:meth:`~uiclasses.base.Model.attribute_matches` method of each children.
+    :py:meth:`~uiclasses.base.Model.attribute_matches` method of each descendants.
 
     **Features:**
 
@@ -83,7 +83,7 @@ class IterableCollection(UserFriendlyObject, Sized, IterableType[T]):
         return super().__len__()
 
     def sorted(self, **kw):
-        """returns a new ``ModelList`` with this collections' children sorted.
+        """returns a new ``ModelList`` with this collections' descendants sorted.
 
         Example:
 
@@ -98,7 +98,7 @@ class IterableCollection(UserFriendlyObject, Sized, IterableType[T]):
         return self.__class__(items)
 
     def sorted_by(self, attribute: str, **kw):
-        """sort by a single attribute of the model children.
+        """sort by a single attribute of the model descendants.
 
         Example:
 
@@ -117,7 +117,7 @@ class IterableCollection(UserFriendlyObject, Sized, IterableType[T]):
     def filter_by(
         self, attribute_name: str, fnmatch_pattern: str
     ) -> internal_typing.IterableCollection[Model]:
-        """filter by a single attribute of the model children.
+        """filter by a single attribute of the model descendants.
 
         Example:
 
@@ -134,7 +134,7 @@ class IterableCollection(UserFriendlyObject, Sized, IterableType[T]):
         )
 
     def filter(self, check: Callable[[Model], bool]) -> IterableType[Model]:
-        """returns a new ``ModelList`` with this collections' children filter.
+        """returns a new ``ModelList`` with this collections' descendants filter.
 
         Example:
 
@@ -213,19 +213,19 @@ class IterableCollection(UserFriendlyObject, Sized, IterableType[T]):
         return columns
 
     def to_dict(self, only_visible: bool = False) -> IterableType[dict]:
-        """calls ``.to_dict()`` in each children of this collection."""
+        """calls ``.to_dict()`` in each descendants of this collection."""
         return [m.to_dict(only_visible=only_visible) for m in self]
 
     def serialize(self, only_visible: bool = False) -> IterableType[dict]:
-        """calls ``.serialize()`` in each children of this collection."""
+        """calls ``.serialize()`` in each descendants of this collection."""
         return [m.serialize(only_visible=only_visible) for m in self]
 
     def serialize_visible(self) -> IterableType[dict]:
-        """calls ``.serialize_visible()`` in each children of this collection."""
+        """calls ``.serialize_visible()`` in each descendants of this collection."""
         return [m.serialize_visible() for m in self]
 
     def serialize_all(self) -> IterableType[dict]:
-        """calls ``.serialize_all()`` in each children of this collection."""
+        """calls ``.serialize_all()`` in each descendants of this collection."""
         return [m.serialize_all() for m in self]
 
 
@@ -235,17 +235,17 @@ class ModelList(list, IterableCollection[T]):
 
     """
 
-    def __init__(self, children: IterableType[T]):
+    def __init__(self, descendants: IterableType[T]):
         model_class = self.__of_model__
 
-        if not is_iterable(children):
+        if not is_iterable(descendants):
             raise TypeError(
-                f"{self.__class__.__name__} requires the 'children' attribute to be "
-                f"a valid iterable, got {children!r} {type(children)} instead"
+                f"{self.__class__.__name__} requires the 'descendants' attribute to be "
+                f"a valid iterable, got {descendants!r} {type(descendants)} instead"
             )
 
         items = []
-        for index, child in enumerate(children):
+        for index, child in enumerate(descendants):
             if isinstance(child, dict):
                 child = self.__of_model__(child)
             if not isinstance(child, model_class):
@@ -273,16 +273,16 @@ class ModelSet(OrderedSet, IterableCollection):
     `OrderedSet <https://pypi.org/project/ordered-set/>`_ type.
     """
 
-    def __init__(self, children: IterableType[Model]):
+    def __init__(self, descendants: IterableType[Model]):
         model_class = getattr(self, "__of_model__", None)
 
-        if not is_iterable(children):
+        if not is_iterable(descendants):
             raise TypeError(
-                f"{self.__class__.__name__} requires the 'children' attribute to be "
-                f"a valid iterable, got {children!r} {type(children)} instead"
+                f"{self.__class__.__name__} requires the 'descendants' attribute to be "
+                f"a valid iterable, got {descendants!r} {type(descendants)} instead"
             )
         items = []
-        for index, child in enumerate(children):
+        for index, child in enumerate(descendants):
             if isinstance(child, dict):
                 child = self.__of_model__(child)
 

@@ -90,7 +90,7 @@ def try_json(value: str) -> dict:
     return try_convert(value, json.loads)
 
 
-def traverse_dict_children(data, *keys, fallback=None):
+def traverse_dict_descendants(data, *keys, fallback=None):
     """attempts to retrieve the config value under the given nested keys"""
     value = reduce(lambda d, l: d.get(l, None) or {}, keys, data)
     return value or fallback

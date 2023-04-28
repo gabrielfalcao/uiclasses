@@ -47,7 +47,7 @@ from .utils import (
     list_setters_from_metaclass,
     list_visible_field_names_from_dataclass,
     repr_attributes,
-    traverse_dict_children,
+    traverse_dict_descendants,
     try_dict,
     try_int,
     try_json,
@@ -116,7 +116,7 @@ class DataBag(UserFriendlyObject):
 
     def traverse(self, *keys, fallback=None):
         """attempts to retrieve the config value under the given nested keys"""
-        value = traverse_dict_children(self.__data__, *keys, fallback=fallback)
+        value = traverse_dict_descendants(self.__data__, *keys, fallback=fallback)
         if isinstance(value, dict):
             return DataBagChild(value, *keys)
 

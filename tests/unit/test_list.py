@@ -220,5 +220,5 @@ def test_model_list_not_iterable():
     when_called = BlogPost.List.when.called_with(None)
     when_called.should.have.raised(
         TypeError,
-        "BlogPost.List requires the 'children' attribute to be a valid iterable, got None <class 'NoneType'> instead",
+        "BlogPost.List requires the 'descendants' attribute to be a valid iterable, got None <class 'NoneType'> instead",
     )
