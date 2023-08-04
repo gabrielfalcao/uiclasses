@@ -27,4 +27,4 @@ jobs:
           pip install -e .
 
     - name: Execute Tests
-      run: pyenv use "${{ matrix.python }}" && python --version && make tests
+      run: pyenv local "${{ matrix.python }}" && python --version && make tests
