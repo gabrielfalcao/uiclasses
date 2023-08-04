@@ -3,14 +3,14 @@
 GIT_ROOT		:= $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 DOCS_ROOT		:= $(GIT_ROOT)/docs
 HTML_ROOT		:= $(DOCS_ROOT)/build/html
-VENV_ROOT		:= $(GIT_ROOT)/.venv
-VENV			?= $(VENV_ROOT)
+PYTHON_VERSION		:= $(shell python --version | awk '{ print $$NF }')
+VENV_ROOT		:= $(GIT_ROOT)/.python-$(PYTHON_VERSION)-venv
+VENV			:= $(VENV_ROOT)
 BENTO_BIN		:= $(shell which bento)
 DOCS_INDEX		:= $(HTML_ROOT)/index.html
 BENTO_EMAIL		:= gabriel@nacaolivre.org
 
 export VENV
-
 
 
 all: dependencies tests
