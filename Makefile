@@ -1,4 +1,3 @@
-.PHONY: tests all unit functional clean dependencies tdd docs html purge dist python-format
 
 GIT_ROOT		:= $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 DOCS_ROOT		:= $(GIT_ROOT)/docs
@@ -60,7 +59,7 @@ release: | clean bento unit functional tests html
 bento: | $(BENTO_BIN)
 	$(BENTO_BIN) --agree --email=$(BENTO_EMAIL) check --all
 
-dist: | clean
+dist: clean | $(VENV)
 	$(VENV)/bin/python setup.py build sdist
 
 pypi: dist | $(VENV)/bin/twine
@@ -83,3 +82,5 @@ python-format: $(VENV)/bin/autoflake $(VENV)/bin/isort $(VENV)/bin/black
 	$(VENV)/bin/autoflake -ir tests
 	$(VENV)/bin/black uiclasses
 	$(VENV)/bin/black tests
+
+.PHONY: tests all unit functional clean dependencies tdd docs html purge dist python-format
