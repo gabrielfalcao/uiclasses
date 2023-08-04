@@ -17,26 +17,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Install python version
-      uses: gabrielfalcao/pyenv-action@v15
-      with:
-        default: "${{ matrix.python }}"
-        command: pip install -U pip setuptools
-
     - name: Install Dependencies
-      uses: gabrielfalcao/pyenv-action@v15
+      uses: gabrielfalcao/pyenv-action@v16
       with:
         default: "${{ matrix.python }}"
-        command: pip install -r development.txt
-
-    - name: Install Dependencies
-      uses: gabrielfalcao/pyenv-action@v15
-      with:
-        default: "${{ matrix.python }}"
-        command: pip install -e .
+        command: |
+          pip install -U pip setuptools
+          pip install -r development.txt
+          pip install -e .
 
     - name: Execute Tests
-      uses: gabrielfalcao/pyenv-action@v15
-      with:
-        default: "${{ matrix.python }}"
-        command: make test
+      run: pyenv local "${{ matrix.python }}" && make tests
