@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+Changes in 3.0.0
+~~~~~~~~~~~~~~~~
+
+- Replace ``uiclasses.collections.List.children`` with ``uiclasses.collections.List.descendants``.
+- Replace ``uiclasses.collections.Set.children`` with ``uiclasses.collections.Set.descendants``.
+- Replace ``uiclasses.utils.traverse_dict_descendants`` with ``uiclasses.utils.traverse_dict_descendants``.
+
 Changes in 2.3.2
 ~~~~~~~~~~~~~~~~
 
