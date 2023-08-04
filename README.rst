@@ -8,11 +8,8 @@ UIClasses - Data-Modeling for User Interfaces
 .. image:: https://img.shields.io/codecov/c/github/gabrielfalcao/uiclasses
    :target: https://codecov.io/gh/gabrielfalcao/uiclasses
 
-.. image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-3.6?label=python%203.6
-   :target: https://github.com/gabrielfalcao/uiclasses/actions
-
-.. image:: https://img.shields.io/github/workflow/status/gabrielfalcao/uiclasses/python-3.7?label=python%203.7
-   :target: https://github.com/gabrielfalcao/uiclasses/actions
+.. image:: https://github.com/gabrielfalcao/uiclasses/actions/workflows/main.yml/badge.svg
+   :target: https://github.com/gabrielfalcao/uiclasses/actions/workflows/main.yml
 
 .. image:: https://img.shields.io/readthedocs/uiclasses
    :target: https://uiclasses.readthedocs.io/
