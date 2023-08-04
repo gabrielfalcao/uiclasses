@@ -26,3 +26,9 @@ jobs:
 
     - name: Execute Tests
       run: pyenv local "${{ matrix.python }}" && python --version && make tests
+
+    - id: bento
+      name: Bento Ack
+      uses: returntocorp/bento-action@v1
+      with:
+        acceptTermsWithEmail: gabriel@nacaolivre.org
