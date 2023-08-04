@@ -1,0 +1,33 @@
+name: UIClasses Tests
+on: [push, pull_request]
+
+jobs:
+  python:
+    name: "Python"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python:
+          - "3.9"
+          - "3.7"
+          - "3.10"
+          - "3.11"
+          - "3.6"
+          - "3.8"
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install python version
+      uses: gabrielfalcao/pyenv-action@v15
+      with:
+        default: "${{ matrix.python }}"
+        command: pip install -U pip setuptools
+
+    - name: Install dependencies
+      run: pip install -r development.txt
+
+    - name: Install uiclasses
+      run: pip install -e .
+
+    - name: Run tests
+      run: make test
